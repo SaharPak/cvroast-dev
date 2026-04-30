@@ -3,7 +3,7 @@
 This is a portable AI skill. It works in three environments.
 
 **Project home:** [cvroast.dev](https://cvroast.dev)
-**Source:** [github.com/saharlead/ai-cv-roast](https://github.com/saharlead/ai-cv-roast)
+**Source:** [github.com/SaharPak/ai-cv-roast](https://github.com/SaharPak/ai-cv-roast)
 
 ## Cursor
 
@@ -12,11 +12,11 @@ This is a portable AI skill. It works in three environments.
    ```bash
    # For project-level (this repo only):
    mkdir -p .cursor/skills && cd .cursor/skills
-   git clone https://github.com/saharlead/ai-cv-roast.git
+   git clone https://github.com/SaharPak/ai-cv-roast.git
 
    # For personal-level (every project you open):
    mkdir -p ~/.cursor/skills && cd ~/.cursor/skills
-   git clone https://github.com/saharlead/ai-cv-roast.git
+   git clone https://github.com/SaharPak/ai-cv-roast.git
    ```
 
 2. Restart Cursor. The skill will auto-load when you ask the agent to evaluate a CV or cover letter.
@@ -30,11 +30,11 @@ This is a portable AI skill. It works in three environments.
    ```bash
    # For project-level:
    mkdir -p .claude/skills && cd .claude/skills
-   git clone https://github.com/saharlead/ai-cv-roast.git
+   git clone https://github.com/SaharPak/ai-cv-roast.git
 
    # For personal-level:
    mkdir -p ~/.claude/skills && cd ~/.claude/skills
-   git clone https://github.com/saharlead/ai-cv-roast.git
+   git clone https://github.com/SaharPak/ai-cv-roast.git
    ```
 
 2. Run `claude` in any project. The skill activates automatically when you ask for a CV review.
@@ -55,7 +55,7 @@ If installed correctly, the agent will summarize the skill (six scoring dimensio
 
 If you don't want to install anything, just paste this into any Claude conversation:
 
-> "Read the SKILL.md, EVALUATION.md, and EXAMPLES.md from https://github.com/saharlead/ai-cv-roast and use them as your rubric to evaluate the CV I'm about to paste."
+> "Read the SKILL.md, EVALUATION.md, and EXAMPLES.md from https://github.com/SaharPak/ai-cv-roast and use them as your rubric to evaluate the CV I'm about to paste."
 
 Then paste your CV. (This works because Claude can fetch public GitHub files.)
 
