@@ -2,6 +2,9 @@
 
 This is a portable AI skill. It works in three environments.
 
+**Project home:** [cvroast.dev](https://cvroast.dev)
+**Source:** [github.com/saharlead/ai-cv-roast](https://github.com/saharlead/ai-cv-roast)
+
 ## Cursor
 
 1. Clone this repo into your Cursor skills folder:

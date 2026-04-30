@@ -3,8 +3,11 @@
 > **Built with the Tech Immigrants community. By immigrants, for immigrants.**
 > A Claude Code / Cursor skill that evaluates your CV and cover letter against how AI hiring actually works in 2026.
 
+**Home:** [cvroast.dev](https://cvroast.dev)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Skill: Claude Code](https://img.shields.io/badge/Skill-Claude%20Code%20%7C%20Cursor%20%7C%20OpenCode-7C3AED)](INSTALL.md)
+[![Domain: cvroast.dev](https://img.shields.io/badge/cvroast.dev-7C3AED?logo=safari&logoColor=white)](https://cvroast.dev)
 
 ## Why this exists
 
