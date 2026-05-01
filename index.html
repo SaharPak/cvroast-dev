@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI CV Roast — Your CV, scored against 2026 AI hiring research</title>
+  <meta name="description" content="A free, open-source Claude Code / Cursor skill that evaluates your CV and cover letter against how AI hiring actually works in 2026. Built by the Tech Immigrants community." />
+
+  <!-- Open Graph / Twitter cards -->
+  <meta property="og:title" content="AI CV Roast — Your CV, scored against 2026 AI hiring research" />
+  <meta property="og:description" content="Free, open-source Claude Code / Cursor skill. Six-dimension scoring rubric backed by research from Karpathy, Lenny Rachitsky, Marty Cagan, and FAANG recruiters." />
+  <meta property="og:url" content="https://cvroast.dev" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:creator" content="@saharlead" />
+
+  <!-- Tailwind via CDN (no build step) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --card: #16161e;
+      --card-hover: #1c1c26;
+      --border: #2a2a36;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #7C3AED;
+      --accent-2: #14b8a6;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+    .gradient-text {
+      background: linear-gradient(135deg, #a78bfa 0%, #14b8a6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gradient-bg-subtle {
+      background: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.15), transparent 50%);
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      background: var(--card-hover);
+    }
+    .btn-primary {
+      background: var(--accent);
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover {
+      background: #6d28d9;
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: var(--card);
+    }
+    pre.code-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-size: 0.875rem;
+      line-height: 1.7;
+      color: #e2e8f0;
+    }
+    .stat-number {
+      font-size: 3rem;
+      line-height: 1;
+      font-weight: 800;
+    }
+    @media (min-width: 768px) {
+      .stat-number { font-size: 4rem; }
+    }
+    .dimension-row {
+      display: grid;
+      grid-template-columns: 1fr 100px;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .dimension-row:last-child { border-bottom: none; }
+    .weight-bar {
+      height: 6px;
+      background: rgba(124, 58, 237, 0.15);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+    .weight-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="border-b border-[#2a2a36] sticky top-0 z-50 backdrop-blur-md bg-black/60">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 font-bold text-lg">
+        <span class="text-2xl">🔥</span>
+        <span>cvroast<span class="text-[#7C3AED]">.dev</span></span>
+      </a>
+      <div class="flex items-center gap-4 text-sm">
+        <a href="#install" class="text-slate-400 hover:text-white transition">Install</a>
+        <a href="#how" class="text-slate-400 hover:text-white transition">How it works</a>
+        <a href="https://github.com/SaharPak/ai-cv-roast" class="text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="gradient-bg-subtle">
+    <div class="max-w-4xl mx-auto px-6 py-20 md:py-32 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#7C3AED]/10 border border-[#7C3AED]/30 text-xs font-medium text-[#a78bfa] mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#a78bfa]"></span>
+        Built with the Tech Immigrants community
+      </div>
+
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
+        Your CV, scored against
+        <span class="gradient-text block">2026 AI hiring research.</span>
+      </h1>
+
+      <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+        A free, open-source Claude Code &amp; Cursor skill that evaluates your CV and cover letter
+        the way AI hiring managers actually do in 2026. Six-dimension scoring. Concrete rewrites. No data collection.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="#install" class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold">
+          Install in 2 minutes
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="https://github.com/SaharPak/ai-cv-roast" class="btn-secondary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          View source on GitHub
+        </a>
+      </div>
+
+      <p class="text-xs text-slate-500 mt-8">MIT licensed · No telemetry · Runs on your machine</p>
+    </div>
+  </section>
+
+  <!-- The problem -->
+  <section class="border-t border-[#2a2a36]">
+    <div class="max-w-5xl mx-auto px-6 py-20">
+      <div class="text-center mb-12">
+        <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">The 2026 reality</p>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Three things broke job applications.</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card rounded-xl p-8 text-center">
+          <div class="stat-number gradient-text mb-3">70%</div>
+          <p class="text-sm text-slate-300 leading-relaxed">
+            Of companies now use AI to screen resumes — your CV faces a model before a human.
+          </p>
+        </div>
+        <div class="card rounded-xl p-8 text-center">
+          <div class="stat-number gradient-text mb-3">75%</div>
+          <p class="text-sm text-slate-300 leading-relaxed">
+            Of qualified candidates get filtered out by ATS before any hiring manager sees them.
+          </p>
+        </div>
+        <div class="card rounded-xl p-8 text-center">
+          <div class="stat-number gradient-text mb-3">100×</div>
+          <p class="text-sm text-slate-300 leading-relaxed">
+            "I've shipped something with AI tools" beats "I have an AI certification" by this much.
+          </p>
+        </div>
+      </div>
+
+      <p class="text-center text-slate-400 mt-10 max-w-2xl mx-auto leading-relaxed">
+        The advice that worked in 2023 actively hurts you in 2026. We turned the new research into rules.
+        The rules became a skill. The skill is now yours.
+      </p>
+    </div>
+  </section>
+
+  <!-- The rubric -->
+  <section id="how" class="border-t border-[#2a2a36] gradient-bg-subtle">
+    <div class="max-w-4xl mx-auto px-6 py-20">
+      <div class="text-center mb-12">
+        <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">The rubric</p>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Six dimensions, weighted by what AI hiring managers actually care about.</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">Backed by research from Karpathy, Lenny Rachitsky, Marty Cagan, Claire Vo, and FAANG recruiters.</p>
+      </div>
+
+      <div class="card rounded-xl overflow-hidden">
+        <div class="dimension-row">
+          <div>
+            <div class="font-semibold mb-1">Shipped Evidence</div>
+            <div class="text-xs text-slate-400">Real, in-production AI/PM work with named tools and outcomes</div>
+          </div>
+          <div>
+            <div class="weight-bar"><div class="weight-bar-fill" style="width: 100%"></div></div>
+            <div class="text-xs text-slate-400 mt-1 text-right">30%</div>
+          </div>
+        </div>
+        <div class="dimension-row">
+          <div>
+            <div class="font-semibold mb-1">Quantified Impact</div>
+            <div class="text-xs text-slate-400">Numbers in every bullet — scope, speed, adoption, savings</div>
+          </div>
+          <div>
+            <div class="weight-bar"><div class="weight-bar-fill" style="width: 67%"></div></div>
+            <div class="text-xs text-slate-400 mt-1 text-right">20%</div>
+          </div>
+        </div>
+        <div class="dimension-row">
+          <div>
+            <div class="font-semibold mb-1">AI Tooling Visibility</div>
+            <div class="text-xs text-slate-400">Cursor, Claude Code, n8n, LangChain, RAG — explicitly named</div>
+          </div>
+          <div>
+            <div class="weight-bar"><div class="weight-bar-fill" style="width: 50%"></div></div>
+            <div class="text-xs text-slate-400 mt-1 text-right">15%</div>
+          </div>
+        </div>
+        <div class="dimension-row">
+          <div>
+            <div class="font-semibold mb-1">ATS Compatibility</div>
+            <div class="text-xs text-slate-400">Single column, no tables, standard headings, parseable PDF</div>
+          </div>
+          <div>
+            <div class="weight-bar"><div class="weight-bar-fill" style="width: 50%"></div></div>
+            <div class="text-xs text-slate-400 mt-1 text-right">15%</div>
+          </div>
+        </div>
+        <div class="dimension-row">
+          <div>
+            <div class="font-semibold mb-1">Keyword Match to JD</div>
+            <div class="text-xs text-slate-400">Exact terminology from the posting present in your CV</div>
+          </div>
+          <div>
+            <div class="weight-bar"><div class="weight-bar-fill" style="width: 33%"></div></div>
+            <div class="text-xs text-slate-400 mt-1 text-right">10%</div>
+          </div>
+        </div>
+        <div class="dimension-row">
+          <div>
+            <div class="font-semibold mb-1">Public Proof Surface</div>
+            <div class="text-xs text-slate-400">LinkedIn polished, GitHub active, Medium/blog/X visible</div>
+          </div>
+          <div>
+            <div class="weight-bar"><div class="weight-bar-fill" style="width: 33%"></div></div>
+            <div class="text-xs text-slate-400 mt-1 text-right">10%</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-center text-sm text-slate-500 mt-6">
+        Plus a separate cover letter rubric using the <strong class="text-slate-300">HCPA framework</strong> (Hook, Connection, Proof, Ask).
+      </p>
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section id="install" class="border-t border-[#2a2a36]">
+    <div class="max-w-4xl mx-auto px-6 py-20">
+      <div class="text-center mb-12">
+        <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">Install</p>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Two minutes. No signup. No API key.</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto mt-4">Pick your environment. The skill auto-loads when you ask for a CV review.</p>
+      </div>
+
+      <div class="space-y-8">
+        <!-- Cursor -->
+        <div>
+          <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+            <span class="text-[#a78bfa]">→</span> Cursor
+          </h3>
+          <pre class="code-block"><code><span class="text-slate-500"># Personal install (works in every project)</span>
+mkdir -p ~/.cursor/skills && cd ~/.cursor/skills
+git clone https://github.com/SaharPak/ai-cv-roast.git</code></pre>
+        </div>
+
+        <!-- Claude Code -->
+        <div>
+          <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+            <span class="text-[#a78bfa]">→</span> Claude Code
+          </h3>
+          <pre class="code-block"><code><span class="text-slate-500"># Personal install (works in every project)</span>
+mkdir -p ~/.claude/skills && cd ~/.claude/skills
+git clone https://github.com/SaharPak/ai-cv-roast.git</code></pre>
+        </div>
+
+        <!-- Use it -->
+        <div>
+          <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+            <span class="text-[#a78bfa]">→</span> Then ask your AI agent
+          </h3>
+          <pre class="code-block"><code><span class="text-[#14b8a6]">"Roast my CV using the ai-cv-roast skill."</span></code></pre>
+          <p class="text-sm text-slate-400 mt-3">Paste your CV (markdown, plain text, or attach the PDF). Get back: a 0-5 score, the top issues ranked by impact, and concrete before/after rewrites.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy -->
+  <section class="border-t border-[#2a2a36]">
+    <div class="max-w-4xl mx-auto px-6 py-20">
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card rounded-xl p-6">
+          <div class="text-2xl mb-3">🔒</div>
+          <h3 class="font-semibold mb-2">Your CV stays on your machine</h3>
+          <p class="text-sm text-slate-400">No server, no upload, no telemetry. The skill runs entirely inside your Claude/Cursor session.</p>
+        </div>
+        <div class="card rounded-xl p-6">
+          <div class="text-2xl mb-3">📖</div>
+          <h3 class="font-semibold mb-2">Show me the rules</h3>
+          <p class="text-sm text-slate-400">Every score comes from rules you can read. Open <code class="text-[#a78bfa]">SKILL.md</code> and see exactly how it works.</p>
+        </div>
+        <div class="card rounded-xl p-6">
+          <div class="text-2xl mb-3">🌍</div>
+          <h3 class="font-semibold mb-2">Free forever, MIT licensed</h3>
+          <p class="text-sm text-slate-400">No paid tier, no upsell. Fork it, contribute back, or build your own version.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why this exists / Tech Immigrants -->
+  <section class="border-t border-[#2a2a36] gradient-bg-subtle">
+    <div class="max-w-3xl mx-auto px-6 py-20 text-center">
+      <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">Why this exists</p>
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-6">By immigrants, for immigrants.</h2>
+      <p class="text-lg text-slate-300 leading-relaxed mb-6">
+        The Tech Immigrants community is 50,000+ tech professionals trying to land jobs internationally.
+        CV feedback was the most-asked help. So we built a free, research-backed skill that gives consistent
+        feedback at scale — for free.
+      </p>
+      <p class="text-slate-400 leading-relaxed">
+        If it helps you land a role, the only ask: contribute one example back to the repo
+        so we can teach it to handle your case better.
+      </p>
+
+      <div class="flex items-center justify-center gap-4 mt-10 text-sm">
+        <a href="https://t.me/twitterimmigrant" class="text-slate-400 hover:text-white transition">Telegram</a>
+        <span class="text-slate-700">·</span>
+        <a href="https://youtube.com/c/TechImmigrants" class="text-slate-400 hover:text-white transition">YouTube</a>
+        <span class="text-slate-700">·</span>
+        <a href="https://x.com/saharlead" class="text-slate-400 hover:text-white transition">X</a>
+        <span class="text-slate-700">·</span>
+        <a href="https://linkedin.com/company/techimmigrants" class="text-slate-400 hover:text-white transition">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="border-t border-[#2a2a36]">
+    <div class="max-w-3xl mx-auto px-6 py-20 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Ready to roast your CV?</h2>
+      <p class="text-slate-400 mb-8">Two minutes to install. Free forever. Your data never leaves your machine.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="#install" class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold">
+          Install now
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="https://github.com/SaharPak/ai-cv-roast" class="btn-secondary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium">
+          ⭐ Star on GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-[#2a2a36]">
+    <div class="max-w-6xl mx-auto px-6 py-10">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-2 text-sm text-slate-400">
+          <span class="text-xl">🔥</span>
+          <span>cvroast<span class="text-[#7C3AED]">.dev</span></span>
+          <span class="text-slate-700 mx-2">·</span>
+          <span>MIT licensed</span>
+          <span class="text-slate-700 mx-2">·</span>
+          <span>Built with <a href="https://t.me/twitterimmigrant" class="hover:text-white transition">Tech Immigrants</a></span>
+        </div>
+        <div class="flex items-center gap-5 text-sm text-slate-400">
+          <a href="https://github.com/SaharPak/ai-cv-roast" class="hover:text-white transition">GitHub</a>
+          <a href="https://github.com/SaharPak/ai-cv-roast/blob/main/CONTRIBUTING.md" class="hover:text-white transition">Contribute</a>
+          <a href="https://github.com/SaharPak/ai-cv-roast/blob/main/RESEARCH.md" class="hover:text-white transition">Research</a>
+          <a href="https://x.com/saharlead" class="hover:text-white transition">@saharlead</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
