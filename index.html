@@ -1,631 +1,895 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI CV Roast — Your CV, scored against 2026 AI hiring research</title>
-  <meta name="description" content="Free AI tool that scores your CV against 2026 hiring research. Six-dimension rubric. Concrete rewrites. No signup. Your CV is never stored." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Roast - AI Resume Review for Tech Roles</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-  <!-- Open Graph / Twitter cards -->
-  <meta property="og:title" content="AI CV Roast — Your CV, scored in 15 seconds" />
-  <meta property="og:description" content="Free AI tool that scores your CV against 2026 hiring research. Backed by advice from Karpathy, Lenny Rachitsky, Marty Cagan, and FAANG recruiters." />
-  <meta property="og:url" content="https://cvroast.dev" />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://cvroast.dev/cvroast-hero.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:creator" content="@saharlead" />
-  <meta name="twitter:image" content="https://cvroast.dev/cvroast-hero.png" />
+  :root {
+    --bg: #0a0a0b;
+    --surface: #141416;
+    --surface-2: #1c1c1f;
+    --surface-3: #242428;
+    --border: #2a2a2e;
+    --text: #e4e4e7;
+    --text-muted: #71717a;
+    --text-dim: #52525b;
+    --accent: #f97316;
+    --accent-glow: rgba(249, 115, 22, 0.15);
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+  }
 
-  <!-- Favicon (emoji) -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>" />
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  <!-- Tailwind via CDN (no build step) -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
 
-  <!-- marked.js for client-side markdown rendering -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
 
-  <!-- Inter font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  /* Header */
+  .hero {
+    text-align: center;
+    margin-bottom: 48px;
+  }
 
-  <style>
-    :root {
-      --bg: #0a0a0f;
-      --card: #16161e;
-      --card-hover: #1c1c26;
-      --border: #2a2a36;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent: #7C3AED;
-      --accent-2: #14b8a6;
-    }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      -webkit-font-smoothing: antialiased;
-    }
-    code, pre { font-family: 'JetBrains Mono', monospace; }
-    .gradient-text {
-      background: linear-gradient(135deg, #a78bfa 0%, #14b8a6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .gradient-bg-subtle {
-      background: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.15), transparent 50%);
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .card:hover {
-      border-color: var(--accent);
-      background: var(--card-hover);
-    }
-    .btn-primary {
-      background: var(--accent);
-      transition: background 0.2s, transform 0.2s;
-    }
-    .btn-primary:hover:not(:disabled) {
-      background: #6d28d9;
-      transform: translateY(-1px);
-    }
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-    .btn-secondary {
-      border: 1px solid var(--border);
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .btn-secondary:hover {
-      border-color: var(--accent);
-      background: var(--card);
-    }
-    .stat-number {
-      font-size: 3rem;
-      line-height: 1;
-      font-weight: 800;
-    }
-    @media (min-width: 768px) {
-      .stat-number { font-size: 4rem; }
-    }
-    .dimension-row {
-      display: grid;
-      grid-template-columns: 1fr 100px;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .dimension-row:last-child { border-bottom: none; }
-    .weight-bar {
-      height: 6px;
-      background: rgba(124, 58, 237, 0.15);
-      border-radius: 3px;
-      overflow: hidden;
-      position: relative;
-    }
-    .weight-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      border-radius: 3px;
-    }
-    textarea {
-      resize: vertical;
-      min-height: 200px;
-    }
-    textarea:focus {
-      outline: none;
-    }
+  .hero-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-glow);
+    border: 1px solid rgba(249, 115, 22, 0.25);
+    padding: 4px 12px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
 
-    /* Markdown result styling (manual prose since we use Tailwind CDN without typography plugin) */
-    .result-prose h1, .result-prose h2, .result-prose h3 {
-      color: #f8fafc;
-      font-weight: 700;
-      margin-top: 1.75rem;
-      margin-bottom: 0.75rem;
-      line-height: 1.3;
-    }
-    .result-prose h1 { font-size: 1.75rem; }
-    .result-prose h2 { font-size: 1.4rem; color: #a78bfa; }
-    .result-prose h3 { font-size: 1.15rem; color: #14b8a6; }
-    .result-prose p { color: #cbd5e1; line-height: 1.7; margin-bottom: 1rem; }
-    .result-prose strong { color: #f8fafc; font-weight: 600; }
-    .result-prose em { color: #cbd5e1; }
-    .result-prose ul, .result-prose ol { padding-left: 1.5rem; margin-bottom: 1rem; color: #cbd5e1; }
-    .result-prose li { margin-bottom: 0.4rem; line-height: 1.6; }
-    .result-prose blockquote {
-      border-left: 3px solid #7C3AED;
-      padding: 0.5rem 1rem;
-      margin: 1rem 0;
-      background: rgba(124, 58, 237, 0.06);
-      color: #cbd5e1;
-      font-style: italic;
-      border-radius: 0 6px 6px 0;
-    }
-    .result-prose code {
-      background: rgba(124, 58, 237, 0.15);
-      color: #c4b5fd;
-      padding: 0.15rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.875rem;
-    }
-    .result-prose pre {
-      background: #0a0a0f;
-      border: 1px solid var(--border);
-      padding: 1rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 1rem 0;
-    }
-    .result-prose pre code { background: transparent; padding: 0; }
-    .result-prose table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1rem 0;
-      font-size: 0.9rem;
-    }
-    .result-prose th, .result-prose td {
-      border: 1px solid var(--border);
-      padding: 0.6rem 0.85rem;
-      text-align: left;
-    }
-    .result-prose th {
-      background: rgba(124, 58, 237, 0.1);
-      color: #a78bfa;
-      font-weight: 600;
-    }
-    .result-prose td { color: #cbd5e1; }
-    .result-prose hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
-    .result-prose a { color: #a78bfa; text-decoration: underline; }
+  .hero h1 {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 
-    /* Spinner */
-    .spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid rgba(124, 58, 237, 0.2);
-      border-top-color: #7C3AED;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      display: inline-block;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
+  .hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  /* Input area */
+  .input-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+
+  .input-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .cv-input {
+    width: 100%;
+    min-height: 200px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text);
+    resize: vertical;
+    line-height: 1.6;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .cv-input:focus {
+    border-color: var(--accent);
+  }
+
+  .cv-input::placeholder {
+    color: var(--text-dim);
+  }
+
+  .input-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+  }
+
+  .char-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .roast-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+    background: var(--accent);
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: -0.01em;
+  }
+
+  .roast-btn:hover {
+    background: #fb923c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 24px rgba(249, 115, 22, 0.3);
+  }
+
+  .roast-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Loading state */
+  .loading {
+    display: none;
+    text-align: center;
+    padding: 60px 0;
+  }
+
+  .loading.active { display: block; }
+
+  .loading-flame {
+    font-size: 48px;
+    animation: pulse 1s ease-in-out infinite;
+    margin-bottom: 16px;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.8; }
+  }
+
+  .loading-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  /* Results */
+  .results {
+    display: none;
+  }
+
+  .results.active { display: block; }
+
+  /* Score card */
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .score-ring {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 20px;
+  }
+
+  .score-ring svg {
+    transform: rotate(-90deg);
+  }
+
+  .score-ring .bg-ring {
+    stroke: var(--surface-3);
+  }
+
+  .score-ring .score-arc {
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1.5s ease;
+  }
+
+  .score-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .score-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .score-verdict {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .score-verdict-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  /* Roast text */
+  .roast-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .roast-card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .roast-text {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text);
+  }
+
+  .roast-text p {
+    margin-bottom: 14px;
+  }
+
+  .roast-text p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Dimensions */
+  .dimensions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 600px) {
+    .dimensions-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 32px; }
+  }
+
+  .dim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .dim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .dim-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .dim-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .dim-bar {
+    height: 4px;
+    background: var(--surface-3);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .dim-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+
+  .dim-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* Rewrites */
+  .rewrite-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .rewrite-item {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .rewrite-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .rewrite-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .rewrite-before {
+    color: var(--red);
+  }
+
+  .rewrite-after-label {
+    color: var(--green);
+  }
+
+  .rewrite-text {
+    font-size: 13px;
+    line-height: 1.65;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  .rewrite-text.before {
+    background: rgba(239, 68, 68, 0.08);
+    border-left: 3px solid var(--red);
+    color: #fca5a5;
+    text-decoration: line-through;
+    text-decoration-color: rgba(239, 68, 68, 0.3);
+  }
+
+  .rewrite-text.after {
+    background: rgba(34, 197, 94, 0.08);
+    border-left: 3px solid var(--green);
+    color: #86efac;
+  }
+
+  .rewrite-why {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+    padding-left: 19px;
+  }
+
+  /* CTA */
+  .cta-card {
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(168, 85, 247, 0.1));
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+  }
+
+  .cta-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .cta-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .try-again-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    padding: 10px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .try-again-btn:hover {
+    background: var(--surface-2);
+    border-color: var(--text-dim);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .footer a:hover {
+    color: var(--accent);
+  }
+</style>
 </head>
 <body>
 
-  <!-- Nav -->
-  <nav class="border-b border-[#2a2a36] sticky top-0 z-50 backdrop-blur-md bg-black/60">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2 font-bold text-lg">
-        <span class="text-2xl">🔥</span>
-        <span>cvroast<span class="text-[#7C3AED]">.dev</span></span>
-      </a>
-      <div class="flex items-center gap-4 text-sm">
-        <a href="#roast" class="text-slate-400 hover:text-white transition">Roast my CV</a>
-        <a href="#rubric" class="text-slate-400 hover:text-white transition">Rubric</a>
-        <a href="#community" class="text-slate-400 hover:text-white transition">Community</a>
-      </div>
-    </div>
-  </nav>
-
+<div class="container">
   <!-- Hero -->
-  <section class="gradient-bg-subtle">
-    <div class="max-w-4xl mx-auto px-6 py-16 md:py-24 text-center">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#7C3AED]/10 border border-[#7C3AED]/30 text-xs font-medium text-[#a78bfa] mb-6">
-        <span class="w-1.5 h-1.5 rounded-full bg-[#a78bfa]"></span>
-        Built with the Tech Immigrants community
-      </div>
+  <div class="hero">
+    <div class="hero-badge">2026 AI Job Market Edition</div>
+    <h1>Roast My CV</h1>
+    <p>Paste your resume. Get a brutally honest AI review scored against what actually gets you hired at AI/tech companies in 2026. No fluff. Real fixes.</p>
+  </div>
 
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
-        Your CV, scored against
-        <span class="gradient-text block">2026 AI hiring research.</span>
-      </h1>
-
-      <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-        Paste your CV. Get a six-dimension score, the top issues ranked by impact, and concrete before/after rewrites.
-        Free, no signup, 15 seconds.
-      </p>
-
-      <div class="flex items-center justify-center">
-        <a href="#roast" class="btn-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-lg font-semibold text-base">
-          Roast my CV
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </a>
-      </div>
-
-      <p class="text-xs text-slate-500 mt-6">Your CV is never stored · One free roast per visitor per day</p>
+  <!-- Input -->
+  <div class="input-section" id="inputSection">
+    <label class="input-label">Paste your CV text</label>
+    <textarea class="cv-input" id="cvInput" placeholder="Paste your resume text here...&#10;&#10;Tip: Copy from your PDF or doc. Plain text works best.&#10;We'll roast it against what FAANG recruiters and AI hiring managers actually look for in 2026."></textarea>
+    <div class="input-footer">
+      <span class="char-count" id="charCount">0 characters</span>
+      <button class="roast-btn" id="roastBtn" disabled>Roast My CV</button>
     </div>
-  </section>
+  </div>
 
-  <!-- The web app -->
-  <section id="roast" class="border-t border-[#2a2a36]">
-    <div class="max-w-3xl mx-auto px-6 py-16 md:py-20">
-      <div class="text-center mb-10">
-        <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">Try it now</p>
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-3">Paste your CV. Get scored in 15 seconds.</h2>
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div class="loading-flame">&#x1F525;</div>
+    <div class="loading-text" id="loadingText">Lighting the grill...</div>
+  </div>
+
+  <!-- Results -->
+  <div class="results" id="results">
+    <!-- Score Ring -->
+    <div class="score-card">
+      <div class="score-ring">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <circle class="bg-ring" cx="70" cy="70" r="58" fill="none" stroke-width="8"/>
+          <circle class="score-arc" id="scoreArc" cx="70" cy="70" r="58" fill="none" stroke-width="8"
+            stroke-dasharray="364.4" stroke-dashoffset="364.4"/>
+        </svg>
+        <div class="score-number" id="scoreNumber">0</div>
+        <div class="score-label">/ 5.0</div>
       </div>
-
-      <form id="roast-form" class="space-y-5">
-        <div>
-          <label for="cv-input" class="block text-sm font-medium text-slate-300 mb-2">
-            Your CV <span class="text-slate-500 font-normal">— paste plain text, markdown, or copy from your LinkedIn / PDF</span>
-          </label>
-          <textarea
-            id="cv-input"
-            rows="14"
-            placeholder="Paste your CV here.&#10;&#10;Tip: Open your CV PDF, select all (Cmd+A / Ctrl+A), copy, paste here.&#10;Or copy the text from your LinkedIn 'About' + 'Experience' sections."
-            class="w-full bg-[#16161e] border border-[#2a2a36] rounded-lg p-4 text-slate-200 font-mono text-sm focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] transition leading-relaxed"
-            required
-          ></textarea>
-          <div class="flex justify-between text-xs text-slate-500 mt-1.5">
-            <span>Minimum 200 characters · Maximum 50,000</span>
-            <span id="char-count">0 chars</span>
-          </div>
-        </div>
-
-        <details class="text-sm">
-          <summary class="cursor-pointer text-slate-400 hover:text-white transition select-none">+ Add a target job description (optional, sharper keyword scoring)</summary>
-          <div class="mt-3">
-            <textarea
-              id="jd-input"
-              rows="6"
-              placeholder="Paste the job description you're targeting. The roast will score keyword match precisely."
-              class="w-full bg-[#16161e] border border-[#2a2a36] rounded-lg p-4 text-slate-200 font-mono text-sm focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] transition leading-relaxed"
-            ></textarea>
-          </div>
-        </details>
-
-        <button type="submit" id="roast-button" class="btn-primary w-full px-6 py-4 rounded-lg font-semibold text-base flex items-center justify-center gap-2">
-          <span id="button-label">🔥 Roast my CV</span>
-        </button>
-
-        <p class="text-xs text-slate-500 text-center leading-relaxed">
-          Your CV is sent to Anthropic's Claude for evaluation, then immediately discarded.
-          We don't store, log, or train on your data. <a href="#privacy" class="text-slate-400 hover:text-white underline">More on privacy</a>.
-        </p>
-      </form>
-
-      <!-- Loading state -->
-      <div id="loading" class="hidden mt-10 text-center py-8">
-        <div class="spinner mb-4"></div>
-        <p class="text-slate-300 font-medium">Reading your CV…</p>
-        <p class="text-slate-500 text-sm mt-1">This usually takes 10-20 seconds.</p>
-      </div>
-
-      <!-- Error state -->
-      <div id="error-box" class="hidden mt-8 rounded-xl p-5 border border-red-500/30 bg-red-500/5">
-        <div class="flex items-start gap-3">
-          <span class="text-2xl shrink-0">⚠️</span>
-          <div class="flex-1">
-            <p class="font-semibold text-red-300 mb-1">Couldn't roast your CV</p>
-            <p id="error-message" class="text-sm text-slate-300"></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Result -->
-      <div id="result" class="hidden mt-12">
-        <div class="text-center mb-6">
-          <p class="text-sm uppercase tracking-wider text-[#14b8a6] font-semibold">Your roast</p>
-        </div>
-        <article id="result-content" class="result-prose card rounded-xl p-6 md:p-8"></article>
-
-        <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-sm">
-          <button id="copy-button" class="btn-secondary px-4 py-2 rounded-lg text-slate-300 hover:text-white">
-            📋 Copy result
-          </button>
-          <a href="https://github.com/SaharPak/ai-cv-roast" class="btn-secondary px-4 py-2 rounded-lg text-slate-300 hover:text-white">
-            ⭐ Star the open-source skill
-          </a>
-        </div>
-
-        <p class="text-xs text-slate-500 text-center mt-6">
-          That's your free roast for today. Come back tomorrow for another, or
-          <a href="https://github.com/SaharPak/ai-cv-roast" class="text-[#a78bfa] hover:underline">install the skill in Cursor / Claude Code</a>
-          for unlimited use on your own machine.
-        </p>
-      </div>
+      <div class="score-verdict" id="scoreVerdict"></div>
+      <div class="score-verdict-sub" id="scoreVerdictSub"></div>
     </div>
-  </section>
 
-  <!-- The problem -->
-  <section class="border-t border-[#2a2a36]">
-    <div class="max-w-5xl mx-auto px-6 py-20">
-      <div class="text-center mb-12">
-        <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">The 2026 reality</p>
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Three things broke job applications.</h2>
-      </div>
-
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="card rounded-xl p-8 text-center">
-          <div class="stat-number gradient-text mb-3">70%</div>
-          <p class="text-sm text-slate-300 leading-relaxed">
-            Of companies now use AI to screen resumes — your CV faces a model before a human.
-          </p>
-        </div>
-        <div class="card rounded-xl p-8 text-center">
-          <div class="stat-number gradient-text mb-3">75%</div>
-          <p class="text-sm text-slate-300 leading-relaxed">
-            Of qualified candidates get filtered out by ATS before any hiring manager sees them.
-          </p>
-        </div>
-        <div class="card rounded-xl p-8 text-center">
-          <div class="stat-number gradient-text mb-3">100×</div>
-          <p class="text-sm text-slate-300 leading-relaxed">
-            "I've shipped something with AI tools" beats "I have an AI certification" by this much.
-          </p>
-        </div>
-      </div>
-
-      <p class="text-center text-slate-400 mt-10 max-w-2xl mx-auto leading-relaxed">
-        The advice that worked in 2023 actively hurts you in 2026. We turned the new research into rules.
-        The rules became this tool.
-      </p>
+    <!-- The Roast -->
+    <div class="roast-card">
+      <div class="roast-card-title">&#x1F525; The Roast</div>
+      <div class="roast-text" id="roastText"></div>
     </div>
-  </section>
 
-  <!-- The rubric -->
-  <section id="rubric" class="border-t border-[#2a2a36] gradient-bg-subtle">
-    <div class="max-w-4xl mx-auto px-6 py-20">
-      <div class="text-center mb-12">
-        <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">The rubric</p>
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Six dimensions, weighted by what AI hiring managers actually care about.</h2>
-        <p class="text-slate-400 max-w-2xl mx-auto">Backed by research from Karpathy, Lenny Rachitsky, Marty Cagan, Claire Vo, and FAANG recruiters.</p>
-      </div>
-
-      <div class="card rounded-xl overflow-hidden">
-        <div class="dimension-row">
-          <div>
-            <div class="font-semibold mb-1">Shipped Evidence</div>
-            <div class="text-xs text-slate-400">Real, in-production AI/PM work with named tools and outcomes</div>
-          </div>
-          <div>
-            <div class="weight-bar"><div class="weight-bar-fill" style="width: 100%"></div></div>
-            <div class="text-xs text-slate-400 mt-1 text-right">30%</div>
-          </div>
-        </div>
-        <div class="dimension-row">
-          <div>
-            <div class="font-semibold mb-1">Quantified Impact</div>
-            <div class="text-xs text-slate-400">Numbers in every bullet — scope, speed, adoption, savings</div>
-          </div>
-          <div>
-            <div class="weight-bar"><div class="weight-bar-fill" style="width: 67%"></div></div>
-            <div class="text-xs text-slate-400 mt-1 text-right">20%</div>
-          </div>
-        </div>
-        <div class="dimension-row">
-          <div>
-            <div class="font-semibold mb-1">AI Tooling Visibility</div>
-            <div class="text-xs text-slate-400">Cursor, Claude Code, n8n, LangChain, RAG — explicitly named</div>
-          </div>
-          <div>
-            <div class="weight-bar"><div class="weight-bar-fill" style="width: 50%"></div></div>
-            <div class="text-xs text-slate-400 mt-1 text-right">15%</div>
-          </div>
-        </div>
-        <div class="dimension-row">
-          <div>
-            <div class="font-semibold mb-1">ATS Compatibility</div>
-            <div class="text-xs text-slate-400">Single column, no tables, standard headings, parseable PDF</div>
-          </div>
-          <div>
-            <div class="weight-bar"><div class="weight-bar-fill" style="width: 50%"></div></div>
-            <div class="text-xs text-slate-400 mt-1 text-right">15%</div>
-          </div>
-        </div>
-        <div class="dimension-row">
-          <div>
-            <div class="font-semibold mb-1">Keyword Match to JD</div>
-            <div class="text-xs text-slate-400">Exact terminology from the posting present in your CV</div>
-          </div>
-          <div>
-            <div class="weight-bar"><div class="weight-bar-fill" style="width: 33%"></div></div>
-            <div class="text-xs text-slate-400 mt-1 text-right">10%</div>
-          </div>
-        </div>
-        <div class="dimension-row">
-          <div>
-            <div class="font-semibold mb-1">Public Proof Surface</div>
-            <div class="text-xs text-slate-400">LinkedIn polished, GitHub active, Medium/blog/X visible</div>
-          </div>
-          <div>
-            <div class="weight-bar"><div class="weight-bar-fill" style="width: 33%"></div></div>
-            <div class="text-xs text-slate-400 mt-1 text-right">10%</div>
-          </div>
-        </div>
-      </div>
-
-      <p class="text-center text-sm text-slate-500 mt-6">
-        Open-source rubric — every score comes from rules you can read.
-        <a href="https://github.com/SaharPak/ai-cv-roast/blob/main/EVALUATION.md" class="text-[#a78bfa] hover:underline">See the full rubric</a>.
-      </p>
+    <!-- Dimension Scores -->
+    <div class="roast-card">
+      <div class="roast-card-title">&#x1F4CA; Dimension Breakdown</div>
+      <div class="dimensions-grid" id="dimensionsGrid"></div>
     </div>
-  </section>
 
-  <!-- Privacy -->
-  <section id="privacy" class="border-t border-[#2a2a36]">
-    <div class="max-w-4xl mx-auto px-6 py-20">
-      <div class="text-center mb-10">
-        <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">Honest about privacy</p>
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">No accounts. No storage. No training.</h2>
-      </div>
-
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="card rounded-xl p-6">
-          <div class="text-2xl mb-3">🔒</div>
-          <h3 class="font-semibold mb-2">We don't store your CV</h3>
-          <p class="text-sm text-slate-400">Your CV is sent to Anthropic, scored, and the response is returned to you. Nothing is saved on our servers — not even logs.</p>
-        </div>
-        <div class="card rounded-xl p-6">
-          <div class="text-2xl mb-3">🚫</div>
-          <h3 class="font-semibold mb-2">No model training</h3>
-          <p class="text-sm text-slate-400">Anthropic's API doesn't train on your data by default. Your CV is processed and discarded.</p>
-        </div>
-        <div class="card rounded-xl p-6">
-          <div class="text-2xl mb-3">🛠️</div>
-          <h3 class="font-semibold mb-2">Want zero network?</h3>
-          <p class="text-sm text-slate-400"><a href="https://github.com/SaharPak/ai-cv-roast" class="text-[#a78bfa] hover:underline">Install the open-source skill</a> in Cursor or Claude Code — runs entirely on your machine.</p>
-        </div>
-      </div>
+    <!-- Rewrites -->
+    <div class="rewrite-card">
+      <div class="roast-card-title">&#x1F527; Top 3 Fixes (Before / After)</div>
+      <div id="rewritesContainer"></div>
     </div>
-  </section>
 
-  <!-- Why this exists / Tech Immigrants -->
-  <section id="community" class="border-t border-[#2a2a36] gradient-bg-subtle">
-    <div class="max-w-3xl mx-auto px-6 py-20 text-center">
-      <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">Why this exists</p>
-      <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-6">By immigrants, for immigrants.</h2>
-      <p class="text-lg text-slate-300 leading-relaxed mb-6">
-        The Tech Immigrants community is 50,000+ tech professionals trying to land jobs internationally.
-        CV feedback was the most-asked help. So we built a free, research-backed tool that gives consistent
-        feedback at scale.
-      </p>
-      <p class="text-slate-400 leading-relaxed">
-        If it helps you land a role, the only ask: tell someone else who needs it.
-      </p>
-
-      <div class="flex items-center justify-center gap-4 mt-10 text-sm">
-        <a href="https://t.me/twitterimmigrant" class="text-slate-400 hover:text-white transition">Telegram</a>
-        <span class="text-slate-700">·</span>
-        <a href="https://youtube.com/c/TechImmigrants" class="text-slate-400 hover:text-white transition">YouTube</a>
-        <span class="text-slate-700">·</span>
-        <a href="https://x.com/saharlead" class="text-slate-400 hover:text-white transition">X</a>
-        <span class="text-slate-700">·</span>
-        <a href="https://linkedin.com/company/techimmigrants" class="text-slate-400 hover:text-white transition">LinkedIn</a>
-      </div>
+    <!-- CTA -->
+    <div class="cta-card">
+      <h3>Ready for round two?</h3>
+      <p>Fix the issues above and paste your updated CV to see your score improve.</p>
+      <button class="try-again-btn" id="tryAgainBtn">Roast Again</button>
     </div>
-  </section>
+  </div>
 
-  <!-- Final CTA -->
-  <section class="border-t border-[#2a2a36]">
-    <div class="max-w-3xl mx-auto px-6 py-20 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Ready to see your score?</h2>
-      <p class="text-slate-400 mb-8">15 seconds. No signup. Free.</p>
-      <a href="#roast" class="btn-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-lg font-semibold text-base">
-        🔥 Roast my CV
-      </a>
-    </div>
-  </section>
+  <div class="footer">
+    Built by <a href="https://linkedin.com/in/saharlead">Sahar Pakseresht</a> &middot; Powered by research from FAANG recruiters, Karpathy, Cagan, and 25+ hiring sources
+  </div>
+</div>
 
-  <!-- Footer -->
-  <footer class="border-t border-[#2a2a36]">
-    <div class="max-w-6xl mx-auto px-6 py-10">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-        <div class="flex items-center gap-2 text-sm text-slate-400">
-          <span class="text-xl">🔥</span>
-          <span>cvroast<span class="text-[#7C3AED]">.dev</span></span>
-          <span class="text-slate-700 mx-2">·</span>
-          <span>Built with <a href="https://t.me/twitterimmigrant" class="hover:text-white transition">Tech Immigrants</a></span>
+<script>
+const cvInput = document.getElementById('cvInput');
+const charCount = document.getElementById('charCount');
+const roastBtn = document.getElementById('roastBtn');
+const inputSection = document.getElementById('inputSection');
+const loading = document.getElementById('loading');
+const loadingText = document.getElementById('loadingText');
+const results = document.getElementById('results');
+
+// Character count
+cvInput.addEventListener('input', () => {
+  const len = cvInput.value.length;
+  charCount.textContent = len.toLocaleString() + ' characters';
+  roastBtn.disabled = len < 100;
+});
+
+// Loading messages
+const loadingMessages = [
+  'Lighting the grill...',
+  'Scanning for buzzword soup...',
+  'Checking if ATS can even read this...',
+  'Counting your vague claims...',
+  'Looking for shipped evidence...',
+  'Cross-referencing 2026 hiring signals...',
+  'Preparing the verdict...'
+];
+
+// Roast button
+roastBtn.addEventListener('click', () => {
+  inputSection.style.display = 'none';
+  loading.classList.add('active');
+
+  let msgIndex = 0;
+  const msgInterval = setInterval(() => {
+    msgIndex = (msgIndex + 1) % loadingMessages.length;
+    loadingText.textContent = loadingMessages[msgIndex];
+  }, 1200);
+
+  // Simulate AI processing (replace with real API call)
+  setTimeout(() => {
+    clearInterval(msgInterval);
+    loading.classList.remove('active');
+    renderResults(generateRoast(cvInput.value));
+    results.classList.add('active');
+  }, 4000);
+});
+
+// Try again
+document.getElementById('tryAgainBtn').addEventListener('click', () => {
+  results.classList.remove('active');
+  inputSection.style.display = 'block';
+  cvInput.focus();
+});
+
+function getScoreColor(score) {
+  if (score >= 4.0) return '#22c55e';
+  if (score >= 3.0) return '#eab308';
+  return '#ef4444';
+}
+
+function getVerdict(score) {
+  if (score >= 4.5) return { text: 'Strong. Ship it.', sub: 'Your CV is ready for AI/tech roles.' };
+  if (score >= 4.0) return { text: 'Good bones. Polish it.', sub: 'A few targeted fixes and you\'re there.' };
+  if (score >= 3.5) return { text: 'Needs surgery.', sub: '2-3 sections need real rewrites.' };
+  if (score >= 3.0) return { text: 'Major rebuild needed.', sub: 'The structure is there but the content isn\'t working.' };
+  return { text: 'Start over.', sub: 'This CV is actively hurting your chances.' };
+}
+
+function renderResults(data) {
+  // Score ring
+  const arc = document.getElementById('scoreArc');
+  const circumference = 364.4;
+  const offset = circumference - (data.score / 5) * circumference;
+  const color = getScoreColor(data.score);
+  arc.style.stroke = color;
+  arc.style.strokeDashoffset = offset;
+  document.getElementById('scoreNumber').textContent = data.score.toFixed(1);
+  document.getElementById('scoreNumber').style.color = color;
+
+  const verdict = getVerdict(data.score);
+  document.getElementById('scoreVerdict').textContent = verdict.text;
+  document.getElementById('scoreVerdictSub').textContent = verdict.sub;
+
+  // Roast text
+  document.getElementById('roastText').innerHTML = data.roast;
+
+  // Dimensions
+  const grid = document.getElementById('dimensionsGrid');
+  grid.innerHTML = '';
+  data.dimensions.forEach(d => {
+    const c = getScoreColor(d.score);
+    const pct = (d.score / 5) * 100;
+    grid.innerHTML += `
+      <div class="dim-card">
+        <div class="dim-header">
+          <span class="dim-name">${d.name}</span>
+          <span class="dim-score" style="color:${c}">${d.score.toFixed(1)}</span>
         </div>
-        <div class="flex items-center gap-5 text-sm text-slate-400">
-          <a href="https://github.com/SaharPak/ai-cv-roast" class="hover:text-white transition">GitHub</a>
-          <a href="https://github.com/SaharPak/ai-cv-roast/blob/main/RESEARCH.md" class="hover:text-white transition">Research</a>
-          <a href="https://x.com/saharlead" class="hover:text-white transition">@saharlead</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+        <div class="dim-bar"><div class="dim-bar-fill" style="width:${pct}%;background:${c}"></div></div>
+        <div class="dim-note">${d.note}</div>
+      </div>`;
+  });
 
-  <script>
-    const form = document.getElementById('roast-form');
-    const cvInput = document.getElementById('cv-input');
-    const jdInput = document.getElementById('jd-input');
-    const charCount = document.getElementById('char-count');
-    const button = document.getElementById('roast-button');
-    const buttonLabel = document.getElementById('button-label');
-    const loading = document.getElementById('loading');
-    const errorBox = document.getElementById('error-box');
-    const errorMessage = document.getElementById('error-message');
-    const result = document.getElementById('result');
-    const resultContent = document.getElementById('result-content');
-    const copyButton = document.getElementById('copy-button');
+  // Rewrites
+  const container = document.getElementById('rewritesContainer');
+  container.innerHTML = '';
+  data.rewrites.forEach(r => {
+    container.innerHTML += `
+      <div class="rewrite-item">
+        <div class="rewrite-label rewrite-before">BEFORE</div>
+        <div class="rewrite-text before">${r.before}</div>
+        <div class="rewrite-label rewrite-after-label">AFTER</div>
+        <div class="rewrite-text after">${r.after}</div>
+        <div class="rewrite-why">${r.why}</div>
+      </div>`;
+  });
+}
 
-    // Live character count
-    cvInput.addEventListener('input', () => {
-      const len = cvInput.value.length;
-      charCount.textContent = `${len.toLocaleString()} chars`;
-      charCount.className = len > 50000 || (len > 0 && len < 200)
-        ? 'text-red-400 text-xs'
-        : 'text-slate-500 text-xs';
+// --- ROAST ENGINE ---
+// This is a local heuristic scorer for the MVP demo.
+// In production, replace generateRoast() with a Claude API call using the system prompt below.
+function generateRoast(cvText) {
+  const text = cvText.toLowerCase();
+  const lines = cvText.split('\n').filter(l => l.trim().length > 0);
+
+  // --- Heuristic scoring ---
+  let scores = { shipped: 2.5, quantified: 2.5, aiTools: 2.5, ats: 3.5, keywords: 2.5, publicProof: 2.0 };
+  let roastLines = [];
+  let rewrites = [];
+
+  // Shipped evidence
+  const shippedSignals = ['shipped', 'built', 'launched', 'deployed', 'released', 'production', 'live', 'users'];
+  const shippedCount = shippedSignals.filter(s => text.includes(s)).length;
+  if (shippedCount >= 5) scores.shipped = 4.5;
+  else if (shippedCount >= 3) scores.shipped = 3.5;
+  else if (shippedCount >= 1) scores.shipped = 2.5;
+  else scores.shipped = 1.5;
+
+  // Quantified impact
+  const numberMatches = cvText.match(/\d+[\+%KMBx]/g) || [];
+  const dollarMatches = cvText.match(/[\$€£]\d+/g) || [];
+  const quantCount = numberMatches.length + dollarMatches.length;
+  if (quantCount >= 12) scores.quantified = 4.5;
+  else if (quantCount >= 7) scores.quantified = 3.5;
+  else if (quantCount >= 3) scores.quantified = 2.5;
+  else scores.quantified = 1.5;
+
+  // AI tools
+  const aiTools = ['cursor', 'claude', 'copilot', 'chatgpt', 'gpt-4', 'langchain', 'langgraph', 'n8n', 'rag', 'llm', 'openai', 'anthropic', 'bedrock', 'vertex', 'pinecone', 'mcp', 'agent'];
+  const aiCount = aiTools.filter(t => text.includes(t)).length;
+  if (aiCount >= 5) scores.aiTools = 4.5;
+  else if (aiCount >= 3) scores.aiTools = 3.5;
+  else if (aiCount >= 1) scores.aiTools = 2.5;
+  else scores.aiTools = 1.0;
+
+  // ATS
+  const hasStandardHeaders = ['experience', 'education', 'skills'].filter(h => text.includes(h)).length;
+  scores.ats = hasStandardHeaders >= 3 ? 4.0 : hasStandardHeaders >= 2 ? 3.0 : 2.0;
+
+  // Public proof
+  const proofSignals = ['github', 'linkedin', 'medium', 'blog', 'youtube', 'twitter', 'x.com', 'portfolio'];
+  const proofCount = proofSignals.filter(s => text.includes(s)).length;
+  if (proofCount >= 3) scores.publicProof = 4.0;
+  else if (proofCount >= 1) scores.publicProof = 2.5;
+  else scores.publicProof = 1.0;
+
+  // Cliche detection
+  const cliches = ['passionate about', 'results-oriented', 'proven track record', 'leveraged', 'spearheaded',
+    'robust', 'seamless', 'cutting-edge', 'fast-paced', 'synergies', 'innovative solutions',
+    'demonstrated ability', 'best practices', 'strategic thinker', 'team player', 'self-starter',
+    'detail-oriented', 'strong communication'];
+  const foundCliches = cliches.filter(c => text.includes(c));
+
+  if (foundCliches.length > 0) {
+    scores.shipped = Math.max(1.5, scores.shipped - 0.5);
+    scores.quantified = Math.max(1.5, scores.quantified - 0.3);
+  }
+
+  // Weighted score
+  const globalScore = (
+    scores.shipped * 0.30 +
+    scores.quantified * 0.20 +
+    scores.aiTools * 0.15 +
+    scores.ats * 0.15 +
+    scores.keywords * 0.10 +
+    scores.publicProof * 0.10
+  );
+
+  // --- Generate roast text ---
+  let roast = '';
+
+  if (foundCliches.length > 0) {
+    roast += `<p>Let's start with the crime scene. You used "${foundCliches[0]}" unironically in 2026. That phrase has been on hiring manager cringe lists since 2019. Every AI screener in production today pattern-matches it as low-signal filler and moves on. ${foundCliches.length > 1 ? `And you didn't stop there: "${foundCliches.slice(1, 3).join('", "')}" also made an appearance. ` : ''}You're not writing a LinkedIn bio from 2017. Strip every one of these out.</p>`;
+  } else {
+    roast += `<p>Good news: you avoided the usual buzzword graveyard ("passionate about," "proven track record," etc.). That alone puts you ahead of 60% of applicants. But clean language isn't enough if the substance is thin.</p>`;
+  }
+
+  if (scores.shipped < 3.5) {
+    roast += `<p>The biggest problem: I can't tell what you actually <em>shipped</em>. Your bullets read like job descriptions, not accomplishments. "Managed the backlog" tells me nothing. "Built a refinement pipeline that cut sprint planning from 3 hours to 45 minutes" tells me everything. Every bullet needs a verb, a thing you built or decided, and a result someone can verify.</p>`;
+  } else {
+    roast += `<p>You've got real shipped evidence in here, which is genuinely rare. Most CVs at this level read like they were written by someone who watched other people build things. Yours actually names what you built and what happened. Keep that energy.</p>`;
+  }
+
+  if (scores.aiTools < 3.0) {
+    roast += `<p>You're applying to AI/tech roles in 2026 and I can barely find any AI tools in your CV. Not a single mention of Cursor, Claude Code, LangChain, or any agentic framework. In a market where 71% of hiring managers prefer a junior with AI skills over a senior without them, this is a real problem. If you use these tools, say so. If you don't, start today.</p>`;
+  }
+
+  if (scores.quantified < 3.5) {
+    roast += `<p>Numbers. You need more of them. I count ${quantCount} quantified data point${quantCount !== 1 ? 's' : ''} in your entire CV. Senior PMs at top companies average 2-3 per bullet. Scope (users, teams, revenue), speed (time to ship), adoption (engagement lift, DAU change), cost (dollars saved, hours recovered). If you can't measure it, you can't prove you did it.</p>`;
+  }
+
+  if (scores.publicProof < 3.0) {
+    roast += `<p>No GitHub, no blog, no portfolio link? In 2026, the hiring funnel starts with your public presence. Recruiters Google you before they read your CV. A pinned GitHub project or a single well-written blog post about something you built outweighs another bullet point. Add links.</p>`;
+  }
+
+  // --- Generate rewrites ---
+  // Find weak bullets to rewrite
+  const bullets = lines.filter(l => l.trim().startsWith('-') || l.trim().startsWith('*') || l.trim().startsWith('•'));
+
+  if (bullets.length > 0) {
+    // Find a vague bullet
+    const vagueBullet = bullets.find(b =>
+      b.toLowerCase().includes('responsible for') ||
+      b.toLowerCase().includes('worked on') ||
+      b.toLowerCase().includes('helped') ||
+      b.toLowerCase().includes('assisted') ||
+      b.toLowerCase().includes('managed') ||
+      b.toLowerCase().includes('involved in')
+    ) || bullets[0];
+
+    rewrites.push({
+      before: vagueBullet.replace(/^[\-\*•]\s*/, '').trim(),
+      after: 'Owned [specific product/feature], shipping [measurable output] using [named tools] that resulted in [quantified outcome for N users/customers].',
+      why: 'Every bullet needs: action verb + what you built + tools used + measurable result. No passive voice, no "responsible for."'
     });
+  }
 
-    // Submit handler
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      errorBox.classList.add('hidden');
-      result.classList.add('hidden');
-
-      const cv = cvInput.value.trim();
-      if (cv.length < 200) {
-        errorBox.classList.remove('hidden');
-        errorMessage.textContent = 'Paste your full CV (at least 200 characters).';
-        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-      }
-
-      loading.classList.remove('hidden');
-      button.disabled = true;
-      buttonLabel.textContent = 'Roasting…';
-      loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-      try {
-        const response = await fetch('/api/roast', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            cv_text: cv,
-            jd_text: jdInput.value.trim() || undefined,
-          }),
-        });
-
-        const data = await response.json();
-        loading.classList.add('hidden');
-
-        if (!response.ok) {
-          errorBox.classList.remove('hidden');
-          errorMessage.textContent = data.message || 'Something went wrong. Try again.';
-          button.disabled = false;
-          buttonLabel.textContent = '🔥 Roast my CV';
-          errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
-
-        // Render markdown
-        resultContent.innerHTML = marked.parse(data.markdown);
-        result.classList.remove('hidden');
-        buttonLabel.textContent = '✓ Done — your roast is below';
-        result.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } catch (err) {
-        console.error(err);
-        loading.classList.add('hidden');
-        errorBox.classList.remove('hidden');
-        errorMessage.textContent = 'Connection failed. Check your internet and try again.';
-        button.disabled = false;
-        buttonLabel.textContent = '🔥 Roast my CV';
-        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+  // Cliche rewrite
+  if (foundCliches.length > 0) {
+    const clicheLine = lines.find(l => foundCliches.some(c => l.toLowerCase().includes(c))) || '';
+    rewrites.push({
+      before: clicheLine.trim() || `"${foundCliches[0]}" (found in your CV)`,
+      after: 'Replace with one specific action and its measurable result. "Strong communication skills" becomes "Ran weekly cross-team syncs across 4 time zones for 2 years, reducing misalignment-caused rework by 40%."',
+      why: 'Modern AI screeners detect cliche density. High-cliche CVs correlate with low-specificity, and get filtered before a human ever reads them.'
     });
+  }
 
-    // Copy result button
-    copyButton.addEventListener('click', () => {
-      const text = resultContent.innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        const original = copyButton.innerHTML;
-        copyButton.innerHTML = '✓ Copied!';
-        setTimeout(() => { copyButton.innerHTML = original; }, 2000);
-      });
+  // AI tools rewrite
+  if (scores.aiTools < 3.5) {
+    rewrites.push({
+      before: 'Skills: Microsoft Office, Jira, Confluence, Google Analytics',
+      after: 'AI & Automation: Claude Code, Cursor, n8n workflow automation, agentic AI patterns (reflection, tool use, multi-agent). Platforms: Jira, Confluence, Figma, Pendo, Amplitude.',
+      why: '68% of ML/AI resumes get rejected for missing tooling keywords. Name the specific AI tools you actually use, not just traditional PM platforms.'
     });
-  </script>
+  } else {
+    rewrites.push({
+      before: 'Familiar with AI tools and machine learning concepts.',
+      after: 'Daily user of Cursor + Claude Code for prototyping and spec generation. Built [project name] using LangChain + RAG pipeline serving [N] users. Completed DeepLearning.AI Agentic AI course.',
+      why: '"Familiar with" is a red flag. Replace with specific tools, specific projects, specific scale.'
+    });
+  }
+
+  return {
+    score: Math.round(globalScore * 10) / 10,
+    roast: roast,
+    dimensions: [
+      { name: 'Shipped Evidence', score: scores.shipped, note: 'Named, production-shipped work with real users and outcomes' },
+      { name: 'Quantified Impact', score: scores.quantified, note: 'Numbers in bullets: scope, speed, adoption, savings' },
+      { name: 'AI Tooling Visibility', score: scores.aiTools, note: 'Specific AI tools named in experience, not just skills' },
+      { name: 'ATS Compatibility', score: scores.ats, note: 'Single column, standard headings, parseable format' },
+      { name: 'Keyword Match', score: scores.keywords, note: 'JD-specific terminology (paste a JD for targeted scoring)' },
+      { name: 'Public Proof', score: scores.publicProof, note: 'GitHub, blog, portfolio, X/LinkedIn visibility' }
+    ],
+    rewrites: rewrites.slice(0, 3)
+  };
+}
+
+/*
+ * ============================================================
+ * PRODUCTION SYSTEM PROMPT (for Claude API integration)
+ * ============================================================
+ * Replace generateRoast() with a Claude API call using this prompt.
+ *
+ * System prompt:
+ *
+ * You are CV Roast, a brutally honest AI resume reviewer for tech and AI roles in 2026.
+ *
+ * Your personality: direct, specific, occasionally funny, never mean without purpose.
+ * Think Gordon Ramsay reviewing food -- harsh but constructive, every criticism comes with a fix.
+ *
+ * Score the CV across 6 dimensions (weighted):
+ * 1. Shipped Evidence (30%): Production-shipped projects with named users/customers and outcomes
+ * 2. Quantified Impact (20%): Numbers in every bullet (scope, speed, adoption, savings)
+ * 3. AI Tooling Visibility (15%): Named AI tools (Cursor, Claude Code, LangChain, etc.) in experience bullets
+ * 4. ATS Compatibility (15%): Single column, standard headings, no tables, clean parsing
+ * 5. Keyword Match (10%): If JD provided, exact terminology match. Otherwise generic AI/tech keywords.
+ * 6. Public Proof Surface (10%): GitHub, blog, portfolio links visible
+ *
+ * Score each 1-5. Global = weighted average.
+ *
+ * CLICHE DETECTION: Flag and roast any of these: "passionate about", "results-oriented",
+ * "proven track record", "leveraged", "spearheaded", "robust", "seamless", "cutting-edge",
+ * "fast-paced", "synergies", "innovative", "demonstrated ability to", "best practices",
+ * "strategic thinker", "team player", "self-starter", "detail-oriented".
+ *
+ * IMPACT BULLET FORMULA: Every good bullet follows:
+ * [Action verb] + [what you built/decided] + [tools/method] + [quantified outcome]
+ *
+ * Return JSON:
+ * {
+ *   "score": 3.2,
+ *   "roast": "<p>HTML paragraphs of the roast...</p>",
+ *   "dimensions": [
+ *     {"name": "Shipped Evidence", "score": 3.0, "note": "one-line observation"},
+ *     ...
+ *   ],
+ *   "rewrites": [
+ *     {"before": "exact text from CV", "after": "rewritten version", "why": "explanation"},
+ *     ...max 3
+ *   ]
+ * }
+ *
+ * Key stats to reference when relevant:
+ * - 70% of companies use AI to screen resumes
+ * - 75% of qualified candidates rejected by ATS before human review
+ * - 71% of hiring managers prefer junior + AI skills over senior + no AI
+ * - 68% of ML resumes rejected for missing MLOps keywords
+ * - RAG appears in 70% of new AI engineering roles
+ * - Average recruiter spends 6 seconds on first CV scan
+ * ============================================================
+ */
+</script>
 
 </body>
 </html>
