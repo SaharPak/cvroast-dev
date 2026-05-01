@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI CV Roast — Your CV, scored against 2026 AI hiring research</title>
-  <meta name="description" content="A free, open-source Claude Code / Cursor skill that evaluates your CV and cover letter against how AI hiring actually works in 2026. Built by the Tech Immigrants community." />
+  <meta name="description" content="Free AI tool that scores your CV against 2026 hiring research. Six-dimension rubric. Concrete rewrites. No signup. Your CV is never stored." />
 
   <!-- Open Graph / Twitter cards -->
-  <meta property="og:title" content="AI CV Roast — Your CV, scored against 2026 AI hiring research" />
-  <meta property="og:description" content="Free, open-source Claude Code / Cursor skill. Six-dimension scoring rubric backed by research from Karpathy, Lenny Rachitsky, Marty Cagan, and FAANG recruiters." />
+  <meta property="og:title" content="AI CV Roast — Your CV, scored in 15 seconds" />
+  <meta property="og:description" content="Free AI tool that scores your CV against 2026 hiring research. Backed by advice from Karpathy, Lenny Rachitsky, Marty Cagan, and FAANG recruiters." />
   <meta property="og:url" content="https://cvroast.dev" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://cvroast.dev/cvroast-hero.png" />
@@ -21,6 +21,9 @@
 
   <!-- Tailwind via CDN (no build step) -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- marked.js for client-side markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <!-- Inter font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -67,9 +70,13 @@
       background: var(--accent);
       transition: background 0.2s, transform 0.2s;
     }
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
       background: #6d28d9;
       transform: translateY(-1px);
+    }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
     .btn-secondary {
       border: 1px solid var(--border);
@@ -78,16 +85,6 @@
     .btn-secondary:hover {
       border-color: var(--accent);
       background: var(--card);
-    }
-    pre.code-block {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      overflow-x: auto;
-      font-size: 0.875rem;
-      line-height: 1.7;
-      color: #e2e8f0;
     }
     .stat-number {
       font-size: 3rem;
@@ -118,6 +115,88 @@
       background: linear-gradient(90deg, var(--accent), var(--accent-2));
       border-radius: 3px;
     }
+    textarea {
+      resize: vertical;
+      min-height: 200px;
+    }
+    textarea:focus {
+      outline: none;
+    }
+
+    /* Markdown result styling (manual prose since we use Tailwind CDN without typography plugin) */
+    .result-prose h1, .result-prose h2, .result-prose h3 {
+      color: #f8fafc;
+      font-weight: 700;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+    .result-prose h1 { font-size: 1.75rem; }
+    .result-prose h2 { font-size: 1.4rem; color: #a78bfa; }
+    .result-prose h3 { font-size: 1.15rem; color: #14b8a6; }
+    .result-prose p { color: #cbd5e1; line-height: 1.7; margin-bottom: 1rem; }
+    .result-prose strong { color: #f8fafc; font-weight: 600; }
+    .result-prose em { color: #cbd5e1; }
+    .result-prose ul, .result-prose ol { padding-left: 1.5rem; margin-bottom: 1rem; color: #cbd5e1; }
+    .result-prose li { margin-bottom: 0.4rem; line-height: 1.6; }
+    .result-prose blockquote {
+      border-left: 3px solid #7C3AED;
+      padding: 0.5rem 1rem;
+      margin: 1rem 0;
+      background: rgba(124, 58, 237, 0.06);
+      color: #cbd5e1;
+      font-style: italic;
+      border-radius: 0 6px 6px 0;
+    }
+    .result-prose code {
+      background: rgba(124, 58, 237, 0.15);
+      color: #c4b5fd;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+    }
+    .result-prose pre {
+      background: #0a0a0f;
+      border: 1px solid var(--border);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+    .result-prose pre code { background: transparent; padding: 0; }
+    .result-prose table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+    .result-prose th, .result-prose td {
+      border: 1px solid var(--border);
+      padding: 0.6rem 0.85rem;
+      text-align: left;
+    }
+    .result-prose th {
+      background: rgba(124, 58, 237, 0.1);
+      color: #a78bfa;
+      font-weight: 600;
+    }
+    .result-prose td { color: #cbd5e1; }
+    .result-prose hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+    .result-prose a { color: #a78bfa; text-decoration: underline; }
+
+    /* Spinner */
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(124, 58, 237, 0.2);
+      border-top-color: #7C3AED;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -130,19 +209,16 @@
         <span>cvroast<span class="text-[#7C3AED]">.dev</span></span>
       </a>
       <div class="flex items-center gap-4 text-sm">
-        <a href="#install" class="text-slate-400 hover:text-white transition">Install</a>
-        <a href="#how" class="text-slate-400 hover:text-white transition">How it works</a>
-        <a href="https://github.com/SaharPak/ai-cv-roast" class="text-slate-400 hover:text-white transition flex items-center gap-1.5">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          GitHub
-        </a>
+        <a href="#roast" class="text-slate-400 hover:text-white transition">Roast my CV</a>
+        <a href="#rubric" class="text-slate-400 hover:text-white transition">Rubric</a>
+        <a href="#community" class="text-slate-400 hover:text-white transition">Community</a>
       </div>
     </div>
   </nav>
 
   <!-- Hero -->
   <section class="gradient-bg-subtle">
-    <div class="max-w-4xl mx-auto px-6 py-20 md:py-32 text-center">
+    <div class="max-w-4xl mx-auto px-6 py-16 md:py-24 text-center">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#7C3AED]/10 border border-[#7C3AED]/30 text-xs font-medium text-[#a78bfa] mb-6">
         <span class="w-1.5 h-1.5 rounded-full bg-[#a78bfa]"></span>
         Built with the Tech Immigrants community
@@ -154,31 +230,108 @@
       </h1>
 
       <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-        A free, open-source Claude Code &amp; Cursor skill that evaluates your CV and cover letter
-        the way AI hiring managers actually do in 2026. Six-dimension scoring. Concrete rewrites. No data collection.
+        Paste your CV. Get a six-dimension score, the top issues ranked by impact, and concrete before/after rewrites.
+        Free, no signup, 15 seconds.
       </p>
 
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-        <a href="#install" class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold">
-          Install in 2 minutes
+      <div class="flex items-center justify-center">
+        <a href="#roast" class="btn-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-lg font-semibold text-base">
+          Roast my CV
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </a>
-        <a href="https://github.com/SaharPak/ai-cv-roast" class="btn-secondary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          View source on GitHub
         </a>
       </div>
 
-      <p class="text-xs text-slate-500 mt-8">MIT licensed · No telemetry · Runs on your machine</p>
+      <p class="text-xs text-slate-500 mt-6">Your CV is never stored · One free roast per visitor per day</p>
+    </div>
+  </section>
 
-      <!-- Hero image -->
-      <div class="mt-16 max-w-4xl mx-auto">
-        <img
-          src="cvroast-hero.png"
-          alt="A laptop displaying a CV being analyzed by AI agents, with floating scoring rubric elements showing percentages and ratings"
-          class="w-full rounded-2xl border border-[#2a2a36] shadow-2xl shadow-purple-500/10"
-          loading="lazy"
-        />
+  <!-- The web app -->
+  <section id="roast" class="border-t border-[#2a2a36]">
+    <div class="max-w-3xl mx-auto px-6 py-16 md:py-20">
+      <div class="text-center mb-10">
+        <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">Try it now</p>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-3">Paste your CV. Get scored in 15 seconds.</h2>
+      </div>
+
+      <form id="roast-form" class="space-y-5">
+        <div>
+          <label for="cv-input" class="block text-sm font-medium text-slate-300 mb-2">
+            Your CV <span class="text-slate-500 font-normal">— paste plain text, markdown, or copy from your LinkedIn / PDF</span>
+          </label>
+          <textarea
+            id="cv-input"
+            rows="14"
+            placeholder="Paste your CV here.&#10;&#10;Tip: Open your CV PDF, select all (Cmd+A / Ctrl+A), copy, paste here.&#10;Or copy the text from your LinkedIn 'About' + 'Experience' sections."
+            class="w-full bg-[#16161e] border border-[#2a2a36] rounded-lg p-4 text-slate-200 font-mono text-sm focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] transition leading-relaxed"
+            required
+          ></textarea>
+          <div class="flex justify-between text-xs text-slate-500 mt-1.5">
+            <span>Minimum 200 characters · Maximum 50,000</span>
+            <span id="char-count">0 chars</span>
+          </div>
+        </div>
+
+        <details class="text-sm">
+          <summary class="cursor-pointer text-slate-400 hover:text-white transition select-none">+ Add a target job description (optional, sharper keyword scoring)</summary>
+          <div class="mt-3">
+            <textarea
+              id="jd-input"
+              rows="6"
+              placeholder="Paste the job description you're targeting. The roast will score keyword match precisely."
+              class="w-full bg-[#16161e] border border-[#2a2a36] rounded-lg p-4 text-slate-200 font-mono text-sm focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] transition leading-relaxed"
+            ></textarea>
+          </div>
+        </details>
+
+        <button type="submit" id="roast-button" class="btn-primary w-full px-6 py-4 rounded-lg font-semibold text-base flex items-center justify-center gap-2">
+          <span id="button-label">🔥 Roast my CV</span>
+        </button>
+
+        <p class="text-xs text-slate-500 text-center leading-relaxed">
+          Your CV is sent to Anthropic's Claude for evaluation, then immediately discarded.
+          We don't store, log, or train on your data. <a href="#privacy" class="text-slate-400 hover:text-white underline">More on privacy</a>.
+        </p>
+      </form>
+
+      <!-- Loading state -->
+      <div id="loading" class="hidden mt-10 text-center py-8">
+        <div class="spinner mb-4"></div>
+        <p class="text-slate-300 font-medium">Reading your CV…</p>
+        <p class="text-slate-500 text-sm mt-1">This usually takes 10-20 seconds.</p>
+      </div>
+
+      <!-- Error state -->
+      <div id="error-box" class="hidden mt-8 rounded-xl p-5 border border-red-500/30 bg-red-500/5">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl shrink-0">⚠️</span>
+          <div class="flex-1">
+            <p class="font-semibold text-red-300 mb-1">Couldn't roast your CV</p>
+            <p id="error-message" class="text-sm text-slate-300"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-12">
+        <div class="text-center mb-6">
+          <p class="text-sm uppercase tracking-wider text-[#14b8a6] font-semibold">Your roast</p>
+        </div>
+        <article id="result-content" class="result-prose card rounded-xl p-6 md:p-8"></article>
+
+        <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-sm">
+          <button id="copy-button" class="btn-secondary px-4 py-2 rounded-lg text-slate-300 hover:text-white">
+            📋 Copy result
+          </button>
+          <a href="https://github.com/SaharPak/ai-cv-roast" class="btn-secondary px-4 py-2 rounded-lg text-slate-300 hover:text-white">
+            ⭐ Star the open-source skill
+          </a>
+        </div>
+
+        <p class="text-xs text-slate-500 text-center mt-6">
+          That's your free roast for today. Come back tomorrow for another, or
+          <a href="https://github.com/SaharPak/ai-cv-roast" class="text-[#a78bfa] hover:underline">install the skill in Cursor / Claude Code</a>
+          for unlimited use on your own machine.
+        </p>
       </div>
     </div>
   </section>
@@ -214,13 +367,13 @@
 
       <p class="text-center text-slate-400 mt-10 max-w-2xl mx-auto leading-relaxed">
         The advice that worked in 2023 actively hurts you in 2026. We turned the new research into rules.
-        The rules became a skill. The skill is now yours.
+        The rules became this tool.
       </p>
     </div>
   </section>
 
   <!-- The rubric -->
-  <section id="how" class="border-t border-[#2a2a36] gradient-bg-subtle">
+  <section id="rubric" class="border-t border-[#2a2a36] gradient-bg-subtle">
     <div class="max-w-4xl mx-auto px-6 py-20">
       <div class="text-center mb-12">
         <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">The rubric</p>
@@ -292,89 +445,52 @@
       </div>
 
       <p class="text-center text-sm text-slate-500 mt-6">
-        Plus a separate cover letter rubric using the <strong class="text-slate-300">HCPA framework</strong> (Hook, Connection, Proof, Ask).
+        Open-source rubric — every score comes from rules you can read.
+        <a href="https://github.com/SaharPak/ai-cv-roast/blob/main/EVALUATION.md" class="text-[#a78bfa] hover:underline">See the full rubric</a>.
       </p>
     </div>
   </section>
 
-  <!-- Install -->
-  <section id="install" class="border-t border-[#2a2a36]">
-    <div class="max-w-4xl mx-auto px-6 py-20">
-      <div class="text-center mb-12">
-        <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">Install</p>
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Two minutes. No signup. No API key.</h2>
-        <p class="text-slate-400 max-w-2xl mx-auto mt-4">Pick your environment. The skill auto-loads when you ask for a CV review.</p>
-      </div>
-
-      <div class="space-y-8">
-        <!-- Cursor -->
-        <div>
-          <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
-            <span class="text-[#a78bfa]">→</span> Cursor
-          </h3>
-          <pre class="code-block"><code><span class="text-slate-500"># Personal install (works in every project)</span>
-mkdir -p ~/.cursor/skills && cd ~/.cursor/skills
-git clone https://github.com/SaharPak/ai-cv-roast.git</code></pre>
-        </div>
-
-        <!-- Claude Code -->
-        <div>
-          <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
-            <span class="text-[#a78bfa]">→</span> Claude Code
-          </h3>
-          <pre class="code-block"><code><span class="text-slate-500"># Personal install (works in every project)</span>
-mkdir -p ~/.claude/skills && cd ~/.claude/skills
-git clone https://github.com/SaharPak/ai-cv-roast.git</code></pre>
-        </div>
-
-        <!-- Use it -->
-        <div>
-          <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
-            <span class="text-[#a78bfa]">→</span> Then ask your AI agent
-          </h3>
-          <pre class="code-block"><code><span class="text-[#14b8a6]">"Roast my CV using the ai-cv-roast skill."</span></code></pre>
-          <p class="text-sm text-slate-400 mt-3">Paste your CV (markdown, plain text, or attach the PDF). Get back: a 0-5 score, the top issues ranked by impact, and concrete before/after rewrites.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- Privacy -->
-  <section class="border-t border-[#2a2a36]">
+  <section id="privacy" class="border-t border-[#2a2a36]">
     <div class="max-w-4xl mx-auto px-6 py-20">
+      <div class="text-center mb-10">
+        <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">Honest about privacy</p>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">No accounts. No storage. No training.</h2>
+      </div>
+
       <div class="grid md:grid-cols-3 gap-6">
         <div class="card rounded-xl p-6">
           <div class="text-2xl mb-3">🔒</div>
-          <h3 class="font-semibold mb-2">Your CV stays on your machine</h3>
-          <p class="text-sm text-slate-400">No server, no upload, no telemetry. The skill runs entirely inside your Claude/Cursor session.</p>
+          <h3 class="font-semibold mb-2">We don't store your CV</h3>
+          <p class="text-sm text-slate-400">Your CV is sent to Anthropic, scored, and the response is returned to you. Nothing is saved on our servers — not even logs.</p>
         </div>
         <div class="card rounded-xl p-6">
-          <div class="text-2xl mb-3">📖</div>
-          <h3 class="font-semibold mb-2">Show me the rules</h3>
-          <p class="text-sm text-slate-400">Every score comes from rules you can read. Open <code class="text-[#a78bfa]">SKILL.md</code> and see exactly how it works.</p>
+          <div class="text-2xl mb-3">🚫</div>
+          <h3 class="font-semibold mb-2">No model training</h3>
+          <p class="text-sm text-slate-400">Anthropic's API doesn't train on your data by default. Your CV is processed and discarded.</p>
         </div>
         <div class="card rounded-xl p-6">
-          <div class="text-2xl mb-3">🌍</div>
-          <h3 class="font-semibold mb-2">Free forever, MIT licensed</h3>
-          <p class="text-sm text-slate-400">No paid tier, no upsell. Fork it, contribute back, or build your own version.</p>
+          <div class="text-2xl mb-3">🛠️</div>
+          <h3 class="font-semibold mb-2">Want zero network?</h3>
+          <p class="text-sm text-slate-400"><a href="https://github.com/SaharPak/ai-cv-roast" class="text-[#a78bfa] hover:underline">Install the open-source skill</a> in Cursor or Claude Code — runs entirely on your machine.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Why this exists / Tech Immigrants -->
-  <section class="border-t border-[#2a2a36] gradient-bg-subtle">
+  <section id="community" class="border-t border-[#2a2a36] gradient-bg-subtle">
     <div class="max-w-3xl mx-auto px-6 py-20 text-center">
       <p class="text-sm uppercase tracking-wider text-[#a78bfa] font-semibold mb-2">Why this exists</p>
       <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-6">By immigrants, for immigrants.</h2>
       <p class="text-lg text-slate-300 leading-relaxed mb-6">
         The Tech Immigrants community is 50,000+ tech professionals trying to land jobs internationally.
-        CV feedback was the most-asked help. So we built a free, research-backed skill that gives consistent
-        feedback at scale — for free.
+        CV feedback was the most-asked help. So we built a free, research-backed tool that gives consistent
+        feedback at scale.
       </p>
       <p class="text-slate-400 leading-relaxed">
-        If it helps you land a role, the only ask: contribute one example back to the repo
-        so we can teach it to handle your case better.
+        If it helps you land a role, the only ask: tell someone else who needs it.
       </p>
 
       <div class="flex items-center justify-center gap-4 mt-10 text-sm">
@@ -389,20 +505,14 @@ git clone https://github.com/SaharPak/ai-cv-roast.git</code></pre>
     </div>
   </section>
 
-  <!-- CTA -->
+  <!-- Final CTA -->
   <section class="border-t border-[#2a2a36]">
     <div class="max-w-3xl mx-auto px-6 py-20 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Ready to roast your CV?</h2>
-      <p class="text-slate-400 mb-8">Two minutes to install. Free forever. Your data never leaves your machine.</p>
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-        <a href="#install" class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold">
-          Install now
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </a>
-        <a href="https://github.com/SaharPak/ai-cv-roast" class="btn-secondary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium">
-          ⭐ Star on GitHub
-        </a>
-      </div>
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Ready to see your score?</h2>
+      <p class="text-slate-400 mb-8">15 seconds. No signup. Free.</p>
+      <a href="#roast" class="btn-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-lg font-semibold text-base">
+        🔥 Roast my CV
+      </a>
     </div>
   </section>
 
@@ -414,19 +524,108 @@ git clone https://github.com/SaharPak/ai-cv-roast.git</code></pre>
           <span class="text-xl">🔥</span>
           <span>cvroast<span class="text-[#7C3AED]">.dev</span></span>
           <span class="text-slate-700 mx-2">·</span>
-          <span>MIT licensed</span>
-          <span class="text-slate-700 mx-2">·</span>
           <span>Built with <a href="https://t.me/twitterimmigrant" class="hover:text-white transition">Tech Immigrants</a></span>
         </div>
         <div class="flex items-center gap-5 text-sm text-slate-400">
           <a href="https://github.com/SaharPak/ai-cv-roast" class="hover:text-white transition">GitHub</a>
-          <a href="https://github.com/SaharPak/ai-cv-roast/blob/main/CONTRIBUTING.md" class="hover:text-white transition">Contribute</a>
           <a href="https://github.com/SaharPak/ai-cv-roast/blob/main/RESEARCH.md" class="hover:text-white transition">Research</a>
           <a href="https://x.com/saharlead" class="hover:text-white transition">@saharlead</a>
         </div>
       </div>
     </div>
   </footer>
+
+  <script>
+    const form = document.getElementById('roast-form');
+    const cvInput = document.getElementById('cv-input');
+    const jdInput = document.getElementById('jd-input');
+    const charCount = document.getElementById('char-count');
+    const button = document.getElementById('roast-button');
+    const buttonLabel = document.getElementById('button-label');
+    const loading = document.getElementById('loading');
+    const errorBox = document.getElementById('error-box');
+    const errorMessage = document.getElementById('error-message');
+    const result = document.getElementById('result');
+    const resultContent = document.getElementById('result-content');
+    const copyButton = document.getElementById('copy-button');
+
+    // Live character count
+    cvInput.addEventListener('input', () => {
+      const len = cvInput.value.length;
+      charCount.textContent = `${len.toLocaleString()} chars`;
+      charCount.className = len > 50000 || (len > 0 && len < 200)
+        ? 'text-red-400 text-xs'
+        : 'text-slate-500 text-xs';
+    });
+
+    // Submit handler
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      errorBox.classList.add('hidden');
+      result.classList.add('hidden');
+
+      const cv = cvInput.value.trim();
+      if (cv.length < 200) {
+        errorBox.classList.remove('hidden');
+        errorMessage.textContent = 'Paste your full CV (at least 200 characters).';
+        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      loading.classList.remove('hidden');
+      button.disabled = true;
+      buttonLabel.textContent = 'Roasting…';
+      loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      try {
+        const response = await fetch('/api/roast', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cv_text: cv,
+            jd_text: jdInput.value.trim() || undefined,
+          }),
+        });
+
+        const data = await response.json();
+        loading.classList.add('hidden');
+
+        if (!response.ok) {
+          errorBox.classList.remove('hidden');
+          errorMessage.textContent = data.message || 'Something went wrong. Try again.';
+          button.disabled = false;
+          buttonLabel.textContent = '🔥 Roast my CV';
+          errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+
+        // Render markdown
+        resultContent.innerHTML = marked.parse(data.markdown);
+        result.classList.remove('hidden');
+        buttonLabel.textContent = '✓ Done — your roast is below';
+        result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (err) {
+        console.error(err);
+        loading.classList.add('hidden');
+        errorBox.classList.remove('hidden');
+        errorMessage.textContent = 'Connection failed. Check your internet and try again.';
+        button.disabled = false;
+        buttonLabel.textContent = '🔥 Roast my CV';
+        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+
+    // Copy result button
+    copyButton.addEventListener('click', () => {
+      const text = resultContent.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const original = copyButton.innerHTML;
+        copyButton.innerHTML = '✓ Copied!';
+        setTimeout(() => { copyButton.innerHTML = original; }, 2000);
+      });
+    });
+  </script>
 
 </body>
 </html>

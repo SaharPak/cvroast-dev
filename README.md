@@ -1,12 +1,11 @@
 # AI CV Roast
 
 > **Built with the Tech Immigrants community. By immigrants, for immigrants.**
-> A Claude Code / Cursor skill that evaluates your CV and cover letter against how AI hiring actually works in 2026.
+> Free AI tool that scores your CV against how AI hiring actually works in 2026.
 
-**Home:** [cvroast.dev](https://cvroast.dev)
+**Try it now:** [cvroast.dev](https://cvroast.dev) — paste your CV, get scored in 15 seconds. No signup.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Skill: Claude Code](https://img.shields.io/badge/Skill-Claude%20Code%20%7C%20Cursor%20%7C%20OpenCode-7C3AED)](INSTALL.md)
 [![Domain: cvroast.dev](https://img.shields.io/badge/cvroast.dev-7C3AED?logo=safari&logoColor=white)](https://cvroast.dev)
 
 ## Why this exists
@@ -17,11 +16,19 @@ Three things happened in 2025 that broke job applications for everyone:
 2. **Generic AI claims now hurt instead of help.** "Passionate about AI" is filtered out. So is "leveraged synergies."
 3. **The bar moved.** "I've used AI tools to ship something real" beats "I have an AI certification" by 100x.
 
-This skill was built by an immigrant tech community trying to land roles in a market where the old advice no longer works. We turned the research into rules. The rules became a skill. The skill is now yours.
+This tool was built by an immigrant tech community trying to land roles in a market where the old advice no longer works. We turned the research into rules. The rules became a tool. Now they're yours.
 
-## What it does
+## Two ways to use it
 
-When you ask Claude (via Cursor, Claude Code, or OpenCode) to evaluate your CV or cover letter, this skill activates and scores you against six dimensions backed by 2026 hiring research:
+### Web app (most people)
+Go to [cvroast.dev](https://cvroast.dev), paste your CV, get scored. One free roast per visitor per day. No signup, no API key, no install. Your CV is sent to Claude for scoring and immediately discarded.
+
+### Open-source skill (developers, power users, privacy-strict)
+Install this repo as a skill in Cursor, Claude Code, or OpenCode. Unlimited roasts. Your CV never leaves your machine. See [INSTALL.md](INSTALL.md).
+
+## What it scores
+
+Six dimensions, weighted by what AI hiring managers actually care about in 2026:
 
 | Dimension | Weight |
 |---|---|
@@ -34,36 +41,35 @@ When you ask Claude (via Cursor, Claude Code, or OpenCode) to evaluate your CV o
 
 You get a score, the top issues ranked by impact, and concrete before/after rewrites for your worst bullets.
 
-It also does cover letters using the **HCPA formula** (Hook, Connection, Proof, Ask) with a similar rubric.
+It also handles cover letters using the **HCPA formula** (Hook, Connection, Proof, Ask).
 
 ## Quick example
 
 **Before:**
 > Results-oriented Senior Product Manager with 10+ years of experience driving cross-functional initiatives and delivering robust solutions in fast-paced environments. Passionate about leveraging cutting-edge AI to drive innovation.
 
-**After (the skill rewrote it):**
+**After (the tool rewrote it):**
 > A product manager who shipped 10+ enterprise integrations adopted by 500+ B2B clients, then led a company-wide identity migration affecting 55,000+ user accounts across 10+ teams. Daily user of Cursor and Claude Code for product spec generation and prototyping.
 
 The rewrite added: scope numbers, named tools, real outcomes, no buzzword soup.
 
-## Install
-
-See [INSTALL.md](INSTALL.md) for Cursor, Claude Code, and OpenCode setup. Takes about 2 minutes.
-
-## What's inside
+## What's in this repo
 
 | File | Purpose |
 |---|---|
-| [SKILL.md](SKILL.md) | The main skill the AI loads when you ask for a CV review |
-| [EVALUATION.md](EVALUATION.md) | Detailed scoring rubrics for both CV and cover letter |
-| [RESEARCH.md](RESEARCH.md) | The 2026 market research the rules are based on (with sources) |
-| [EXAMPLES.md](EXAMPLES.md) | Concrete before/after examples |
+| [`index.html`](index.html) | The cvroast.dev landing page (Cloudflare Pages) |
+| [`functions/api/roast.js`](functions/api/roast.js) | Cloudflare Pages Function — calls Claude API |
+| [`SKILL.md`](SKILL.md) | The open-source skill the AI loads when you ask for a CV review |
+| [`EVALUATION.md`](EVALUATION.md) | Detailed scoring rubrics for both CV and cover letter |
+| [`RESEARCH.md`](RESEARCH.md) | The 2026 market research the rules are based on (with sources) |
+| [`EXAMPLES.md`](EXAMPLES.md) | Concrete before/after examples |
+| [`INSTALL.md`](INSTALL.md) | Install the skill in Cursor / Claude Code / OpenCode |
 
 ## Who built this and why
 
-The Tech Immigrants community ([@saharlead](https://x.com/saharlead) on X, [@TechImmigrants](https://t.me/TechImmigrants) on Telegram) is 44,000+ tech professionals trying to land jobs internationally. CV feedback was the most-asked help in the community.
+The Tech Immigrants community ([@saharlead](https://x.com/saharlead) on X, [Telegram](https://t.me/twitterimmigrant)) is 50,000+ tech professionals trying to land jobs internationally. CV feedback was the most-asked help in the community.
 
-So we built a skill that gives consistent, research-backed feedback at scale — for free. No API key required. No data leaves your machine. Just install it in Claude Code or Cursor and ask for a roast.
+So we built a free, research-backed tool that gives consistent feedback at scale.
 
 ## Contributing
 
@@ -72,7 +78,7 @@ PRs welcome. The most useful contributions:
 - **More before/after examples** — especially for engineering, design, data science roles
 - **Translations** — the rules apply globally; the language barrier is real
 - **Localized rules** — Finnish, German, Japanese, French job markets work differently
-- **Bug reports** — when the skill misses something obvious, open an issue
+- **Bug reports** — when the tool misses something obvious, open an issue
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add an example or rule.
 
@@ -83,5 +89,3 @@ MIT. Use it, fork it, ship it. Just don't claim you built it from scratch — li
 ## Acknowledgments
 
 Research synthesizes advice from: Andrej Karpathy, Marty Cagan, Lenny Rachitsky, Claire Vo, FAANG recruiters (Madison Vitug, Chris Allaire), and 30+ public sources cited in [RESEARCH.md](RESEARCH.md).
-
-The skill structure follows the Cursor / Claude Code skill format.
