@@ -482,6 +482,101 @@
   .footer a:hover {
     color: var(--accent);
   }
+
+  /* JD toggle */
+  .jd-toggle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: none;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    text-align: left;
+  }
+
+  .jd-toggle:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* Markdown prose (for API results) */
+  .prose { font-size: 14px; line-height: 1.75; color: var(--text); }
+  .prose h2 { font-size: 20px; font-weight: 700; margin: 24px 0 12px; color: #fff; }
+  .prose h3 { font-size: 16px; font-weight: 600; margin: 20px 0 8px; color: #fff; }
+  .prose p { margin-bottom: 12px; }
+  .prose strong { color: #fff; font-weight: 600; }
+  .prose ul, .prose ol { padding-left: 20px; margin-bottom: 12px; }
+  .prose li { margin-bottom: 4px; }
+  .prose blockquote {
+    border-left: 3px solid var(--accent);
+    padding: 8px 16px;
+    margin: 12px 0;
+    background: rgba(249, 115, 22, 0.06);
+    border-radius: 0 8px 8px 0;
+    color: var(--text-muted);
+  }
+  .prose table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .prose th { text-align: left; padding: 8px 12px; border-bottom: 2px solid var(--border); color: #fff; font-weight: 600; }
+  .prose td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .prose code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--surface-3);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .prose hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  /* Share bar */
+  .share-bar {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .share-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .share-btn:hover {
+    background: var(--surface-3);
+    color: var(--text);
+    border-color: var(--text-dim);
+  }
+
+  .share-btn.copied {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  /* Error card */
+  .error-card {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .error-card p { font-size: 14px; color: #fca5a5; margin-bottom: 12px; }
+  .error-card .fallback-text { font-size: 12px; color: var(--text-muted); }
 </style>
 </head>
 <body>
@@ -498,6 +593,14 @@
   <div class="input-section" id="inputSection">
     <label class="input-label">Paste your CV text</label>
     <textarea class="cv-input" id="cvInput" placeholder="Paste your resume text here...&#10;&#10;Tip: Copy from your PDF or doc. Plain text works best.&#10;We'll roast it against what FAANG recruiters and AI hiring managers actually look for in 2026."></textarea>
+
+    <div style="margin-top: 16px;">
+      <button class="jd-toggle" id="jdToggle" type="button">+ Add a Job Description (optional, for targeted scoring)</button>
+      <div class="jd-section" id="jdSection" style="display:none; margin-top: 12px;">
+        <textarea class="cv-input" id="jdInput" style="min-height: 120px;" placeholder="Paste the job description here for targeted keyword scoring..."></textarea>
+      </div>
+    </div>
+
     <div class="input-footer">
       <span class="char-count" id="charCount">0 characters</span>
       <button class="roast-btn" id="roastBtn" disabled>Roast My CV</button>
@@ -545,11 +648,21 @@
       <div id="rewritesContainer"></div>
     </div>
 
+    <!-- AI Results (markdown from Claude API) -->
+    <div class="roast-card" id="aiResults" style="display:none;">
+      <div class="roast-card-title">&#x1F525; AI Roast</div>
+      <div class="prose" id="aiResultsContent"></div>
+    </div>
+
     <!-- CTA -->
     <div class="cta-card">
       <h3>Ready for round two?</h3>
       <p>Fix the issues above and paste your updated CV to see your score improve.</p>
-      <button class="try-again-btn" id="tryAgainBtn">Roast Again</button>
+      <div class="share-bar" id="shareBar">
+        <button class="share-btn" id="copyResultsBtn">Copy Results</button>
+        <button class="share-btn" id="shareBtn">Share Score</button>
+      </div>
+      <button class="try-again-btn" id="tryAgainBtn" style="margin-top: 16px;">Roast Again</button>
     </div>
   </div>
 
@@ -558,8 +671,10 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 const cvInput = document.getElementById('cvInput');
+const jdInput = document.getElementById('jdInput');
 const charCount = document.getElementById('charCount');
 const roastBtn = document.getElementById('roastBtn');
 const inputSection = document.getElementById('inputSection');
@@ -567,14 +682,28 @@ const loading = document.getElementById('loading');
 const loadingText = document.getElementById('loadingText');
 const results = document.getElementById('results');
 
-// Character count
+let lastResultMarkdown = '';
+let lastResultScore = 0;
+let usedAI = false;
+
+document.getElementById('jdToggle').addEventListener('click', () => {
+  const sec = document.getElementById('jdSection');
+  const btn = document.getElementById('jdToggle');
+  if (sec.style.display === 'none') {
+    sec.style.display = 'block';
+    btn.textContent = '- Hide Job Description';
+  } else {
+    sec.style.display = 'none';
+    btn.textContent = '+ Add a Job Description (optional, for targeted scoring)';
+  }
+});
+
 cvInput.addEventListener('input', () => {
   const len = cvInput.value.length;
   charCount.textContent = len.toLocaleString() + ' characters';
   roastBtn.disabled = len < 100;
 });
 
-// Loading messages
 const loadingMessages = [
   'Lighting the grill...',
   'Scanning for buzzword soup...',
@@ -585,8 +714,7 @@ const loadingMessages = [
   'Preparing the verdict...'
 ];
 
-// Roast button
-roastBtn.addEventListener('click', () => {
+roastBtn.addEventListener('click', async () => {
   inputSection.style.display = 'none';
   loading.classList.add('active');
 
@@ -596,38 +724,68 @@ roastBtn.addEventListener('click', () => {
     loadingText.textContent = loadingMessages[msgIndex];
   }, 1200);
 
-  // Simulate AI processing (replace with real API call)
-  setTimeout(() => {
+  try {
+    const res = await fetch('/api/roast', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cv_text: cvInput.value,
+        jd_text: jdInput.value || ''
+      })
+    });
+
     clearInterval(msgInterval);
     loading.classList.remove('active');
-    renderResults(generateRoast(cvInput.value));
-    results.classList.add('active');
-  }, 4000);
+
+    if (res.ok) {
+      const data = await res.json();
+      usedAI = true;
+      renderAIResults(data.markdown);
+    } else if (res.status === 429) {
+      usedAI = false;
+      renderHeuristicResults(generateRoast(cvInput.value, jdInput.value));
+    } else {
+      usedAI = false;
+      renderHeuristicResults(generateRoast(cvInput.value, jdInput.value));
+    }
+  } catch (err) {
+    clearInterval(msgInterval);
+    loading.classList.remove('active');
+    usedAI = false;
+    renderHeuristicResults(generateRoast(cvInput.value, jdInput.value));
+  }
+
+  results.classList.add('active');
 });
 
-// Try again
-document.getElementById('tryAgainBtn').addEventListener('click', () => {
-  results.classList.remove('active');
-  inputSection.style.display = 'block';
-  cvInput.focus();
-});
+function renderAIResults(markdown) {
+  lastResultMarkdown = markdown;
 
-function getScoreColor(score) {
-  if (score >= 4.0) return '#22c55e';
-  if (score >= 3.0) return '#eab308';
-  return '#ef4444';
+  document.querySelector('.score-card').style.display = 'none';
+  document.querySelectorAll('.roast-card').forEach(el => {
+    if (el.id !== 'aiResults') el.style.display = 'none';
+  });
+  document.querySelector('.rewrite-card').style.display = 'none';
+
+  const aiContainer = document.getElementById('aiResults');
+  aiContainer.style.display = '';
+  document.getElementById('aiResultsContent').innerHTML = marked.parse(markdown);
+
+  const scoreMatch = markdown.match(/Score:\s*([\d.]+)\s*\/\s*5/i);
+  lastResultScore = scoreMatch ? parseFloat(scoreMatch[1]) : 0;
 }
 
-function getVerdict(score) {
-  if (score >= 4.5) return { text: 'Strong. Ship it.', sub: 'Your CV is ready for AI/tech roles.' };
-  if (score >= 4.0) return { text: 'Good bones. Polish it.', sub: 'A few targeted fixes and you\'re there.' };
-  if (score >= 3.5) return { text: 'Needs surgery.', sub: '2-3 sections need real rewrites.' };
-  if (score >= 3.0) return { text: 'Major rebuild needed.', sub: 'The structure is there but the content isn\'t working.' };
-  return { text: 'Start over.', sub: 'This CV is actively hurting your chances.' };
-}
+function renderHeuristicResults(data) {
+  lastResultScore = data.score;
+  lastResultMarkdown = '';
 
-function renderResults(data) {
-  // Score ring
+  document.querySelector('.score-card').style.display = '';
+  document.querySelectorAll('.roast-card').forEach(el => {
+    if (el.id !== 'aiResults') el.style.display = '';
+  });
+  document.querySelector('.rewrite-card').style.display = '';
+  document.getElementById('aiResults').style.display = 'none';
+
   const arc = document.getElementById('scoreArc');
   const circumference = 364.4;
   const offset = circumference - (data.score / 5) * circumference;
@@ -641,10 +799,8 @@ function renderResults(data) {
   document.getElementById('scoreVerdict').textContent = verdict.text;
   document.getElementById('scoreVerdictSub').textContent = verdict.sub;
 
-  // Roast text
   document.getElementById('roastText').innerHTML = data.roast;
 
-  // Dimensions
   const grid = document.getElementById('dimensionsGrid');
   grid.innerHTML = '';
   data.dimensions.forEach(d => {
@@ -661,7 +817,6 @@ function renderResults(data) {
       </div>`;
   });
 
-  // Rewrites
   const container = document.getElementById('rewritesContainer');
   container.innerHTML = '';
   data.rewrites.forEach(r => {
@@ -676,146 +831,191 @@ function renderResults(data) {
   });
 }
 
-// --- ROAST ENGINE ---
-// This is a local heuristic scorer for the MVP demo.
-// In production, replace generateRoast() with a Claude API call using the system prompt below.
-function generateRoast(cvText) {
+document.getElementById('tryAgainBtn').addEventListener('click', () => {
+  results.classList.remove('active');
+  document.getElementById('aiResults').style.display = 'none';
+  document.querySelector('.score-card').style.display = '';
+  document.querySelectorAll('.roast-card').forEach(el => { if (el.id !== 'aiResults') el.style.display = ''; });
+  document.querySelector('.rewrite-card').style.display = '';
+  inputSection.style.display = 'block';
+  cvInput.focus();
+});
+
+document.getElementById('copyResultsBtn').addEventListener('click', () => {
+  const text = usedAI && lastResultMarkdown
+    ? lastResultMarkdown
+    : document.getElementById('results').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyResultsBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Results'; btn.classList.remove('copied'); }, 2000);
+  });
+});
+
+document.getElementById('shareBtn').addEventListener('click', () => {
+  const text = `I scored ${lastResultScore.toFixed(1)}/5 on cvroast.dev - free AI CV scorer for tech roles. Try it: https://cvroast.dev`;
+  if (navigator.share) {
+    navigator.share({ text }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('shareBtn');
+      btn.textContent = 'Copied to clipboard!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Share Score'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+});
+
+function getScoreColor(score) {
+  if (score >= 4.0) return '#22c55e';
+  if (score >= 3.0) return '#eab308';
+  return '#ef4444';
+}
+
+function getVerdict(score) {
+  if (score >= 4.5) return { text: 'Strong. Ship it.', sub: 'Your CV is ready for AI/tech roles.' };
+  if (score >= 4.0) return { text: 'Good bones. Polish it.', sub: 'A few targeted fixes and you\'re there.' };
+  if (score >= 3.5) return { text: 'Needs surgery.', sub: '2-3 sections need real rewrites.' };
+  if (score >= 3.0) return { text: 'Major rebuild needed.', sub: 'The structure is there but the content isn\'t working.' };
+  return { text: 'Start over.', sub: 'This CV is actively hurting your chances.' };
+}
+
+function generateRoast(cvText, jdText) {
   const text = cvText.toLowerCase();
   const lines = cvText.split('\n').filter(l => l.trim().length > 0);
-
-  // --- Heuristic scoring ---
   let scores = { shipped: 2.5, quantified: 2.5, aiTools: 2.5, ats: 3.5, keywords: 2.5, publicProof: 2.0 };
-  let roastLines = [];
   let rewrites = [];
 
-  // Shipped evidence
-  const shippedSignals = ['shipped', 'built', 'launched', 'deployed', 'released', 'production', 'live', 'users'];
+  const shippedSignals = ['shipped', 'built', 'launched', 'deployed', 'released', 'production', 'live', 'users', 'delivered', 'created', 'developed', 'implemented'];
   const shippedCount = shippedSignals.filter(s => text.includes(s)).length;
-  if (shippedCount >= 5) scores.shipped = 4.5;
-  else if (shippedCount >= 3) scores.shipped = 3.5;
+  if (shippedCount >= 6) scores.shipped = 4.5;
+  else if (shippedCount >= 4) scores.shipped = 3.8;
+  else if (shippedCount >= 2) scores.shipped = 3.0;
   else if (shippedCount >= 1) scores.shipped = 2.5;
   else scores.shipped = 1.5;
 
-  // Quantified impact
-  const numberMatches = cvText.match(/\d+[\+%KMBx]/g) || [];
-  const dollarMatches = cvText.match(/[\$€£]\d+/g) || [];
-  const quantCount = numberMatches.length + dollarMatches.length;
-  if (quantCount >= 12) scores.quantified = 4.5;
-  else if (quantCount >= 7) scores.quantified = 3.5;
+  const numberMatches = cvText.match(/\d+[+%KMBx]/g) || [];
+  const dollarMatches = cvText.match(/[$\u20AC\u00A3]\d+/g) || [];
+  const rangeMatches = cvText.match(/\d+\s*[-]\s*\d+/g) || [];
+  const quantCount = numberMatches.length + dollarMatches.length + rangeMatches.length;
+  if (quantCount >= 15) scores.quantified = 4.5;
+  else if (quantCount >= 10) scores.quantified = 4.0;
+  else if (quantCount >= 6) scores.quantified = 3.5;
   else if (quantCount >= 3) scores.quantified = 2.5;
   else scores.quantified = 1.5;
 
-  // AI tools
-  const aiTools = ['cursor', 'claude', 'copilot', 'chatgpt', 'gpt-4', 'langchain', 'langgraph', 'n8n', 'rag', 'llm', 'openai', 'anthropic', 'bedrock', 'vertex', 'pinecone', 'mcp', 'agent'];
-  const aiCount = aiTools.filter(t => text.includes(t)).length;
+  const aiToolsList = ['cursor', 'claude', 'copilot', 'chatgpt', 'gpt-4', 'gpt-4o', 'langchain', 'langgraph', 'n8n', 'rag', 'llm', 'openai', 'anthropic', 'bedrock', 'vertex', 'pinecone', 'mcp', 'agent', 'agentic', 'transformer', 'hugging face', 'pytorch', 'tensorflow', 'mlflow', 'wandb', 'llamaindex'];
+  const aiCount = aiToolsList.filter(t => text.includes(t)).length;
   if (aiCount >= 5) scores.aiTools = 4.5;
   else if (aiCount >= 3) scores.aiTools = 3.5;
   else if (aiCount >= 1) scores.aiTools = 2.5;
   else scores.aiTools = 1.0;
 
-  // ATS
-  const hasStandardHeaders = ['experience', 'education', 'skills'].filter(h => text.includes(h)).length;
-  scores.ats = hasStandardHeaders >= 3 ? 4.0 : hasStandardHeaders >= 2 ? 3.0 : 2.0;
+  const standardHeaders = ['experience', 'education', 'skills', 'summary', 'projects', 'certifications', 'awards'];
+  const headerCount = standardHeaders.filter(h => text.includes(h)).length;
+  const hasTables = text.includes('|') && (cvText.match(/\|/g) || []).length > 6;
+  let atsScore = headerCount >= 4 ? 4.5 : headerCount >= 3 ? 4.0 : headerCount >= 2 ? 3.0 : 2.0;
+  if (hasTables) atsScore = Math.max(1.5, atsScore - 1.0);
+  scores.ats = atsScore;
 
-  // Public proof
-  const proofSignals = ['github', 'linkedin', 'medium', 'blog', 'youtube', 'twitter', 'x.com', 'portfolio'];
+  if (jdText && jdText.trim().length > 50) {
+    const jdLower = jdText.toLowerCase();
+    const stopWords = ['with','that','this','from','have','will','been','were','they','their','about','would','which','could','other','into','more','some','than','them','then','also','each','made','after','should','these','most','over','such','make','like','just','work','role','team','well','must','only','very','when','what','your'];
+    const jdWords = [...new Set((jdLower.match(/\b[a-z]{4,}\b/g) || []).filter(w => !stopWords.includes(w)))];
+    const matched = jdWords.filter(w => text.includes(w));
+    const matchRate = jdWords.length > 0 ? matched.length / jdWords.length : 0;
+    if (matchRate >= 0.6) scores.keywords = 4.5;
+    else if (matchRate >= 0.4) scores.keywords = 3.5;
+    else if (matchRate >= 0.25) scores.keywords = 2.5;
+    else scores.keywords = 1.5;
+  } else {
+    const genericKeywords = ['product', 'api', 'integration', 'platform', 'roadmap', 'strategy', 'stakeholder', 'cross-functional', 'data-driven', 'agile', 'scrum', 'user research', 'discovery', 'go-to-market'];
+    const genericCount = genericKeywords.filter(k => text.includes(k)).length;
+    if (genericCount >= 8) scores.keywords = 4.0;
+    else if (genericCount >= 5) scores.keywords = 3.0;
+    else if (genericCount >= 2) scores.keywords = 2.5;
+    else scores.keywords = 1.5;
+  }
+
+  const proofSignals = ['github', 'linkedin', 'medium', 'blog', 'youtube', 'twitter', 'x.com', 'portfolio', 'dev.to', 'substack', 'kaggle'];
   const proofCount = proofSignals.filter(s => text.includes(s)).length;
-  if (proofCount >= 3) scores.publicProof = 4.0;
+  if (proofCount >= 4) scores.publicProof = 4.5;
+  else if (proofCount >= 2) scores.publicProof = 3.5;
   else if (proofCount >= 1) scores.publicProof = 2.5;
   else scores.publicProof = 1.0;
 
-  // Cliche detection
-  const cliches = ['passionate about', 'results-oriented', 'proven track record', 'leveraged', 'spearheaded',
-    'robust', 'seamless', 'cutting-edge', 'fast-paced', 'synergies', 'innovative solutions',
-    'demonstrated ability', 'best practices', 'strategic thinker', 'team player', 'self-starter',
-    'detail-oriented', 'strong communication'];
+  const cliches = ['passionate about', 'results-oriented', 'proven track record', 'leveraged', 'spearheaded', 'robust', 'seamless', 'cutting-edge', 'fast-paced', 'synergies', 'innovative solutions', 'demonstrated ability', 'best practices', 'strategic thinker', 'team player', 'self-starter', 'detail-oriented', 'strong communication'];
   const foundCliches = cliches.filter(c => text.includes(c));
-
   if (foundCliches.length > 0) {
     scores.shipped = Math.max(1.5, scores.shipped - 0.5);
     scores.quantified = Math.max(1.5, scores.quantified - 0.3);
   }
 
-  // Weighted score
-  const globalScore = (
-    scores.shipped * 0.30 +
-    scores.quantified * 0.20 +
-    scores.aiTools * 0.15 +
-    scores.ats * 0.15 +
-    scores.keywords * 0.10 +
-    scores.publicProof * 0.10
-  );
+  const globalScore = scores.shipped * 0.30 + scores.quantified * 0.20 + scores.aiTools * 0.15 + scores.ats * 0.15 + scores.keywords * 0.10 + scores.publicProof * 0.10;
 
-  // --- Generate roast text ---
   let roast = '';
-
   if (foundCliches.length > 0) {
-    roast += `<p>Let's start with the crime scene. You used "${foundCliches[0]}" unironically in 2026. That phrase has been on hiring manager cringe lists since 2019. Every AI screener in production today pattern-matches it as low-signal filler and moves on. ${foundCliches.length > 1 ? `And you didn't stop there: "${foundCliches.slice(1, 3).join('", "')}" also made an appearance. ` : ''}You're not writing a LinkedIn bio from 2017. Strip every one of these out.</p>`;
+    roast += '<p>Let\'s start with the crime scene. You used "' + foundCliches[0] + '" unironically in 2026. That phrase has been on hiring manager cringe lists since 2019. Every AI screener pattern-matches it as low-signal filler and moves on.' + (foundCliches.length > 1 ? ' And you didn\'t stop there: "' + foundCliches.slice(1, 3).join('", "') + '" also made an appearance.' : '') + ' Strip every one of these out.</p>';
   } else {
-    roast += `<p>Good news: you avoided the usual buzzword graveyard ("passionate about," "proven track record," etc.). That alone puts you ahead of 60% of applicants. But clean language isn't enough if the substance is thin.</p>`;
+    roast += '<p>Good news: you avoided the usual buzzword graveyard ("passionate about," "proven track record," etc.). That alone puts you ahead of 60% of applicants. But clean language isn\'t enough if the substance is thin.</p>';
   }
 
   if (scores.shipped < 3.5) {
-    roast += `<p>The biggest problem: I can't tell what you actually <em>shipped</em>. Your bullets read like job descriptions, not accomplishments. "Managed the backlog" tells me nothing. "Built a refinement pipeline that cut sprint planning from 3 hours to 45 minutes" tells me everything. Every bullet needs a verb, a thing you built or decided, and a result someone can verify.</p>`;
+    roast += '<p>The biggest problem: I can\'t tell what you actually <em>shipped</em>. Your bullets read like job descriptions, not accomplishments. "Managed the backlog" tells me nothing. "Built a refinement pipeline that cut sprint planning from 3 hours to 45 minutes" tells me everything.</p>';
   } else {
-    roast += `<p>You've got real shipped evidence in here, which is genuinely rare. Most CVs at this level read like they were written by someone who watched other people build things. Yours actually names what you built and what happened. Keep that energy.</p>`;
+    roast += '<p>You\'ve got real shipped evidence in here, which is genuinely rare. Most CVs at this level read like they were written by someone who watched other people build things. Yours actually names what you built. Keep that energy.</p>';
   }
 
   if (scores.aiTools < 3.0) {
-    roast += `<p>You're applying to AI/tech roles in 2026 and I can barely find any AI tools in your CV. Not a single mention of Cursor, Claude Code, LangChain, or any agentic framework. In a market where 71% of hiring managers prefer a junior with AI skills over a senior without them, this is a real problem. If you use these tools, say so. If you don't, start today.</p>`;
+    roast += '<p>You\'re applying to AI/tech roles in 2026 and I can barely find any AI tools in your CV. In a market where 71% of hiring managers prefer a junior with AI skills over a senior without them, this is a real problem. If you use these tools, say so. If you don\'t, start today.</p>';
   }
 
   if (scores.quantified < 3.5) {
-    roast += `<p>Numbers. You need more of them. I count ${quantCount} quantified data point${quantCount !== 1 ? 's' : ''} in your entire CV. Senior PMs at top companies average 2-3 per bullet. Scope (users, teams, revenue), speed (time to ship), adoption (engagement lift, DAU change), cost (dollars saved, hours recovered). If you can't measure it, you can't prove you did it.</p>`;
+    roast += '<p>Numbers. You need more of them. I count ' + quantCount + ' quantified data point' + (quantCount !== 1 ? 's' : '') + ' in your entire CV. Scope, speed, adoption, cost. If you can\'t measure it, you can\'t prove you did it.</p>';
   }
 
   if (scores.publicProof < 3.0) {
-    roast += `<p>No GitHub, no blog, no portfolio link? In 2026, the hiring funnel starts with your public presence. Recruiters Google you before they read your CV. A pinned GitHub project or a single well-written blog post about something you built outweighs another bullet point. Add links.</p>`;
+    roast += '<p>No GitHub, no blog, no portfolio link? In 2026, the hiring funnel starts with your public presence. Recruiters Google you before they read your CV. Add links.</p>';
   }
 
-  // --- Generate rewrites ---
-  // Find weak bullets to rewrite
-  const bullets = lines.filter(l => l.trim().startsWith('-') || l.trim().startsWith('*') || l.trim().startsWith('•'));
+  if (jdText && scores.keywords < 3.0) {
+    roast += '<p>Looking at the job description you provided, your CV is missing key terminology. Mirror the exact phrases from the JD in your summary and top bullets.</p>';
+  }
+
+  const bullets = lines.filter(l => /^\s*[-*\u2022]/.test(l));
 
   if (bullets.length > 0) {
-    // Find a vague bullet
-    const vagueBullet = bullets.find(b =>
-      b.toLowerCase().includes('responsible for') ||
-      b.toLowerCase().includes('worked on') ||
-      b.toLowerCase().includes('helped') ||
-      b.toLowerCase().includes('assisted') ||
-      b.toLowerCase().includes('managed') ||
-      b.toLowerCase().includes('involved in')
-    ) || bullets[0];
-
+    const vagueBullet = bullets.find(b => {
+      const bl = b.toLowerCase();
+      return bl.includes('responsible for') || bl.includes('worked on') || bl.includes('helped') || bl.includes('assisted') || bl.includes('involved in') || bl.includes('participated');
+    }) || bullets[0];
     rewrites.push({
-      before: vagueBullet.replace(/^[\-\*•]\s*/, '').trim(),
+      before: vagueBullet.replace(/^\s*[-*\u2022]\s*/, '').trim(),
       after: 'Owned [specific product/feature], shipping [measurable output] using [named tools] that resulted in [quantified outcome for N users/customers].',
-      why: 'Every bullet needs: action verb + what you built + tools used + measurable result. No passive voice, no "responsible for."'
+      why: 'Every bullet needs: action verb + what you built + tools used + measurable result.'
     });
   }
 
-  // Cliche rewrite
   if (foundCliches.length > 0) {
     const clicheLine = lines.find(l => foundCliches.some(c => l.toLowerCase().includes(c))) || '';
     rewrites.push({
-      before: clicheLine.trim() || `"${foundCliches[0]}" (found in your CV)`,
-      after: 'Replace with one specific action and its measurable result. "Strong communication skills" becomes "Ran weekly cross-team syncs across 4 time zones for 2 years, reducing misalignment-caused rework by 40%."',
-      why: 'Modern AI screeners detect cliche density. High-cliche CVs correlate with low-specificity, and get filtered before a human ever reads them.'
+      before: clicheLine.trim() || '"' + foundCliches[0] + '" (found in your CV)',
+      after: 'Replace with one specific action and its measurable result. "Strong communication skills" becomes "Ran weekly cross-team syncs across 4 time zones, reducing misalignment-caused rework by 40%."',
+      why: 'AI screeners detect cliche density. High-cliche CVs get filtered before a human reads them.'
     });
   }
 
-  // AI tools rewrite
   if (scores.aiTools < 3.5) {
     rewrites.push({
       before: 'Skills: Microsoft Office, Jira, Confluence, Google Analytics',
-      after: 'AI & Automation: Claude Code, Cursor, n8n workflow automation, agentic AI patterns (reflection, tool use, multi-agent). Platforms: Jira, Confluence, Figma, Pendo, Amplitude.',
-      why: '68% of ML/AI resumes get rejected for missing tooling keywords. Name the specific AI tools you actually use, not just traditional PM platforms.'
+      after: 'AI & Automation: Claude Code, Cursor, n8n workflow automation, agentic AI patterns. Platforms: Jira, Confluence, Figma, Pendo.',
+      why: '68% of ML/AI resumes get rejected for missing tooling keywords. Name the specific AI tools you use.'
     });
   } else {
     rewrites.push({
       before: 'Familiar with AI tools and machine learning concepts.',
-      after: 'Daily user of Cursor + Claude Code for prototyping and spec generation. Built [project name] using LangChain + RAG pipeline serving [N] users. Completed DeepLearning.AI Agentic AI course.',
+      after: 'Daily user of Cursor + Claude Code for prototyping and spec generation. Built [project] using LangChain + RAG pipeline serving [N] users.',
       why: '"Familiar with" is a red flag. Replace with specific tools, specific projects, specific scale.'
     });
   }
@@ -828,67 +1028,12 @@ function generateRoast(cvText) {
       { name: 'Quantified Impact', score: scores.quantified, note: 'Numbers in bullets: scope, speed, adoption, savings' },
       { name: 'AI Tooling Visibility', score: scores.aiTools, note: 'Specific AI tools named in experience, not just skills' },
       { name: 'ATS Compatibility', score: scores.ats, note: 'Single column, standard headings, parseable format' },
-      { name: 'Keyword Match', score: scores.keywords, note: 'JD-specific terminology (paste a JD for targeted scoring)' },
+      { name: 'Keyword Match', score: scores.keywords, note: jdText ? 'Scored against the JD you provided' : 'Generic tech keywords (paste a JD for targeted scoring)' },
       { name: 'Public Proof', score: scores.publicProof, note: 'GitHub, blog, portfolio, X/LinkedIn visibility' }
     ],
     rewrites: rewrites.slice(0, 3)
   };
 }
-
-/*
- * ============================================================
- * PRODUCTION SYSTEM PROMPT (for Claude API integration)
- * ============================================================
- * Replace generateRoast() with a Claude API call using this prompt.
- *
- * System prompt:
- *
- * You are CV Roast, a brutally honest AI resume reviewer for tech and AI roles in 2026.
- *
- * Your personality: direct, specific, occasionally funny, never mean without purpose.
- * Think Gordon Ramsay reviewing food -- harsh but constructive, every criticism comes with a fix.
- *
- * Score the CV across 6 dimensions (weighted):
- * 1. Shipped Evidence (30%): Production-shipped projects with named users/customers and outcomes
- * 2. Quantified Impact (20%): Numbers in every bullet (scope, speed, adoption, savings)
- * 3. AI Tooling Visibility (15%): Named AI tools (Cursor, Claude Code, LangChain, etc.) in experience bullets
- * 4. ATS Compatibility (15%): Single column, standard headings, no tables, clean parsing
- * 5. Keyword Match (10%): If JD provided, exact terminology match. Otherwise generic AI/tech keywords.
- * 6. Public Proof Surface (10%): GitHub, blog, portfolio links visible
- *
- * Score each 1-5. Global = weighted average.
- *
- * CLICHE DETECTION: Flag and roast any of these: "passionate about", "results-oriented",
- * "proven track record", "leveraged", "spearheaded", "robust", "seamless", "cutting-edge",
- * "fast-paced", "synergies", "innovative", "demonstrated ability to", "best practices",
- * "strategic thinker", "team player", "self-starter", "detail-oriented".
- *
- * IMPACT BULLET FORMULA: Every good bullet follows:
- * [Action verb] + [what you built/decided] + [tools/method] + [quantified outcome]
- *
- * Return JSON:
- * {
- *   "score": 3.2,
- *   "roast": "<p>HTML paragraphs of the roast...</p>",
- *   "dimensions": [
- *     {"name": "Shipped Evidence", "score": 3.0, "note": "one-line observation"},
- *     ...
- *   ],
- *   "rewrites": [
- *     {"before": "exact text from CV", "after": "rewritten version", "why": "explanation"},
- *     ...max 3
- *   ]
- * }
- *
- * Key stats to reference when relevant:
- * - 70% of companies use AI to screen resumes
- * - 75% of qualified candidates rejected by ATS before human review
- * - 71% of hiring managers prefer junior + AI skills over senior + no AI
- * - 68% of ML resumes rejected for missing MLOps keywords
- * - RAG appears in 70% of new AI engineering roles
- * - Average recruiter spends 6 seconds on first CV scan
- * ============================================================
- */
 </script>
 
 </body>
