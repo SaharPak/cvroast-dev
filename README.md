@@ -67,7 +67,7 @@ The rewrite added: scope numbers, named tools, real outcomes, no buzzword soup.
 
 ## Who built this and why
 
-The Tech Immigrants community ([@saharlead](https://x.com/saharlead) on X, [Telegram](https://t.me/twitterimmigrant)) is 50,000+ tech professionals trying to land jobs internationally. CV feedback was the most-asked help in the community.
+The Tech Immigrants community ( [Telegram](https://t.me/twitterimmigrant)) is 50,000+ tech professionals trying to land jobs internationally. CV feedback was the most-asked help in the community.
 
 So we built a free, research-backed tool that gives consistent feedback at scale.
 
