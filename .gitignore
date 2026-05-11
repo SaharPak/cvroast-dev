@@ -11,3 +11,9 @@ node_modules/
 
 # Private notes (not for public repo)
 SATURDAY-CHECKLIST.md
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
