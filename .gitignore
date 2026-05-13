@@ -11,3 +11,9 @@ node_modules/
 
 # Private notes (not for public repo)
 SATURDAY-CHECKLIST.md
+
+# Wrangler local dev
+.wrangler/
+
+# Cloudflare secrets
+.dev.vars
