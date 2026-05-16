@@ -1134,7 +1134,7 @@
     <span class="shot" id="shot2">&#x1F525;</span>
     <span class="shot" id="shot3">&#x1F525;</span>
   </div>
-  <div class="shots-label" id="shotsLabel"><strong>3 roasts</strong> remaining today</div>
+  <div class="shots-label" id="shotsLabel">You have <strong>3 roasts</strong> available today</div>
 
   <!-- Input -->
   <div class="input-section" id="inputSection">
@@ -1312,7 +1312,7 @@ function updateShotsUI() {
     if (i < used) shot.classList.add('used');
     else shot.classList.remove('used');
   });
-  document.getElementById('shotsLabel').innerHTML = '<strong>' + remaining + ' roast' + (remaining !== 1 ? 's' : '') + '</strong> remaining today';
+  document.getElementById('shotsLabel').innerHTML = 'You have <strong>' + remaining + ' roast' + (remaining !== 1 ? 's' : '') + '</strong> available today';
 }
 
 updateShotsUI();
