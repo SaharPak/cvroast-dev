@@ -61,35 +61,48 @@
     margin-bottom: 48px;
   }
 
-  .social-proof {
-    text-align: center;
-    margin-bottom: 8px;
+  .hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
 
-  .social-proof.visible {
+  .hero-stats.visible {
     opacity: 1;
     transform: translateY(0);
   }
 
-  .social-proof-line {
+  .hero-stat {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     font-family: 'DM Mono', monospace;
     font-size: 13px;
     color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    padding: 6px 16px;
+    border-radius: 100px;
   }
 
-  .social-proof-line .fire {
+  .hero-stat .fire {
     display: inline-block;
     animation: wiggle 1.5s ease-in-out infinite;
   }
 
-  .social-proof-line strong {
+  .hero-stat strong {
     color: var(--ember);
+    font-weight: 700;
+  }
+
+  .hero-stat .token-val {
+    color: var(--flame);
     font-weight: 700;
   }
 
@@ -1089,7 +1102,8 @@
     .signup-submit { padding: 12px; }
     .score-card { padding: 24px; }
     .roast-btn { font-size: 15px; padding: 14px 28px; }
-    .social-proof-line { font-size: 12px; }
+    .hero-stats { gap: 10px; }
+    .hero-stat { font-size: 11px; padding: 5px 12px; }
   }
 </style>
 </head>
@@ -1107,13 +1121,12 @@
 <div class="container">
   <!-- Hero -->
   <div class="hero">
+    <div class="hero-stats visible" id="roastCounter">
+      <div class="hero-stat"><span class="fire">&#x1F525;</span> <strong id="roastCounterNumber">0</strong> CVs roasted</div>
+      <div class="hero-stat"><svg class="coin-icon" width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#ffcd69" stroke="#e8a020" stroke-width="1.5"/><circle cx="12" cy="12" r="8" fill="none" stroke="#e8a020" stroke-width="0.8" opacity="0.5"/><text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="900" fill="#b5700a">T</text></svg> <span class="token-val" id="totalTokensBurned">0</span> tokens burned</div>
+    </div>
     <h1>Get your CV <span class="gradient">roasted</span></h1>
     <p class="hero-sub">Upload your CV. Get a brutally honest score and <strong>line-by-line fixes</strong> based on how AI hiring works in 2026.</p>
-  </div>
-
-  <!-- Social proof -->
-  <div class="social-proof visible" id="roastCounter">
-    <span class="social-proof-line"><span class="fire">&#x1F525;</span> <strong id="roastCounterNumber">0</strong> CVs roasted so far</span>
   </div>
 
   <div class="shots-bar" id="shotsBar">
@@ -1213,7 +1226,6 @@
         <span class="token-cost" id="tokenCost"></span>
       </div>
       <div class="token-breakdown" id="tokenBreakdown"></div>
-      <div class="token-breakdown"><span id="totalTokensBurned" style="color: var(--flame); font-weight: 700;">0</span> total tokens burned across all roasts</div>
     </div>
 
     <!-- CTA -->
