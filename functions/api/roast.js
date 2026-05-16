@@ -250,6 +250,11 @@ export async function handleRoast(request, env) {
       const raw = await env.RATE_LIMIT.get('stats:total_roasts');
       totalRoasts = (parseInt(raw, 10) || 0) + 1;
       await env.RATE_LIMIT.put('stats:total_roasts', String(totalRoasts));
+
+      const roastTokens = (usage.input_tokens || 0) + (usage.output_tokens || 0);
+      const rawTokens = await env.RATE_LIMIT.get('stats:total_tokens');
+      const newTotalTokens = (parseInt(rawTokens, 10) || 0) + roastTokens;
+      await env.RATE_LIMIT.put('stats:total_tokens', String(newTotalTokens));
     }
 
     const inputTokens = usage.input_tokens || 0;

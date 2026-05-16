@@ -15,20 +15,25 @@ const CORS_HEADERS = {
 export async function handleStats(request, env) {
   try {
     let totalRoasts = 0;
+    let totalTokens = 0;
     if (env.RATE_LIMIT) {
       const raw = await env.RATE_LIMIT.get('stats:total_roasts');
       if (raw !== null) {
         totalRoasts = parseInt(raw, 10) || 0;
       }
+      const rawTokens = await env.RATE_LIMIT.get('stats:total_tokens');
+      if (rawTokens !== null) {
+        totalTokens = parseInt(rawTokens, 10) || 0;
+      }
     }
     return new Response(
-      JSON.stringify({ total_roasts: totalRoasts }),
+      JSON.stringify({ total_roasts: totalRoasts, total_tokens: totalTokens }),
       { status: 200, headers: CORS_HEADERS }
     );
   } catch (err) {
     console.error('Stats handler error:', err);
     return new Response(
-      JSON.stringify({ total_roasts: 0 }),
+      JSON.stringify({ total_roasts: 0, total_tokens: 0 }),
       { status: 200, headers: CORS_HEADERS }
     );
   }
