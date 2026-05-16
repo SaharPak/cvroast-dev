@@ -437,8 +437,9 @@
           <label class="radio-option"><input type="radio" name="role_target" value="engineer"> Software Engineer / Developer</label>
           <label class="radio-option"><input type="radio" name="role_target" value="data"> Data / ML / AI Engineer</label>
           <label class="radio-option"><input type="radio" name="role_target" value="design"> Designer (UX/UI/Product)</label>
-          <label class="radio-option"><input type="radio" name="role_target" value="other"> یه چیز دیگه</label>
+          <label class="radio-option"><input type="radio" name="role_target" value="other" id="roleOtherRadio"> یه چیز دیگه</label>
         </div>
+        <input type="text" name="role_target_other" id="roleOtherInput" placeholder="چه پوزیشنی؟ بنویس..." style="display:none; margin-top: 8px;">
       </div>
 
     </div>
@@ -712,6 +713,19 @@
       btn.textContent = 'ارسال فیدبک ✓';
     }
   }
+
+  document.querySelectorAll('input[name="role_target"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const otherInput = document.getElementById('roleOtherInput');
+      if (radio.value === 'other' && radio.checked) {
+        otherInput.style.display = '';
+        otherInput.focus();
+      } else {
+        otherInput.style.display = 'none';
+        otherInput.value = '';
+      }
+    });
+  });
 
   document.querySelectorAll('.checkbox-group').forEach(group => {
     const max = 3;
