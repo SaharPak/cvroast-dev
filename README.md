@@ -1,7 +1,7 @@
-# AI CV Roast
+# CV Roast
 
 > **Built with the Tech Immigrants community. By immigrants, for immigrants.**
-> Free AI tool that scores your CV against how AI hiring actually works in 2026.
+> Free AI tool that scores your tech CV against how hiring actually works in 2026. Works for **all tech roles** — not just PMs.
 
 **Try it now:** [cvroast.dev](https://cvroast.dev) — paste your CV, get scored in 15 seconds. No signup.
 
@@ -10,13 +10,15 @@
 
 ## Why this exists
 
-Three things happened in 2025 that broke job applications for everyone:
+Three things happened in 2025-2026 that broke job applications for everyone:
 
-1. **70% of companies now use AI to screen resumes.** 75% of qualified applicants get rejected before a human ever sees their CV.
-2. **Generic AI claims now hurt instead of help.** "Passionate about AI" is filtered out. So is "leveraged synergies."
-3. **The bar moved.** "I've used AI tools to ship something real" beats "I have an AI certification" by 100x.
+1. **97.8% of Fortune 500 use ATS.** 75% of qualified applicants get rejected before a human ever sees their CV. AI screening is now standard.
+2. **Generic enthusiasm is poison.** "Passionate about technology" is filtered out. So is "leveraged synergies" and "proven track record."
+3. **The bar moved.** Shipped work with quantified impact beats certifications and theory by 100x. AI-skilled workers earn 56% more across ALL tech roles.
 
 This tool was built by an immigrant tech community trying to land roles in a market where the old advice no longer works. We turned the research into rules. The rules became a tool. Now they're yours.
+
+**Supported roles:** Software Engineers (Frontend/Backend/Full-stack/Mobile), Data Engineers, ML/AI Engineers, DevOps/SRE/Platform Engineers, UX/UI/Product Designers, Security Engineers, Engineering Managers, TPMs, QA/SDETs, Solutions Engineers, DevRel, and Product Managers.
 
 ## Two ways to use it
 
@@ -28,18 +30,18 @@ Install this repo as a skill in Cursor, Claude Code, or OpenCode. Unlimited roas
 
 ## What it scores
 
-Six dimensions, weighted by what AI hiring managers actually care about in 2026:
+Six dimensions with **role-adaptive weights** — the tool detects your role family and adjusts automatically:
 
-| Dimension | Weight |
-|---|---|
-| Shipped Evidence | 30% |
-| Quantified Impact | 20% |
-| AI Tooling Visibility | 15% |
-| ATS Compatibility | 15% |
-| Keyword Match | 10% |
-| Public Proof Surface | 10% |
+| Dimension | Range | Key Insight |
+|---|---|---|
+| Shipped Evidence | 20-30% | What you built in production, not what you studied |
+| Quantified Impact | 15-25% | Numbers in every bullet (scale, speed, cost, adoption) |
+| Tech/Tool Visibility | 10-15% | Named tools matching your role, including AI tools |
+| ATS Compatibility | 5-15% | Clean formatting that parses through AI screeners |
+| Keyword Match | 10-15% | JD-specific or role-family keyword coverage |
+| Public Proof Surface | 10-40% | GitHub, portfolio, blog, LinkedIn (40% for designers!) |
 
-You get a score, the top issues ranked by impact, and concrete before/after rewrites for your worst bullets.
+You get a score, the detected role family, top issues ranked by impact, and concrete before/after rewrites for your worst bullets.
 
 It also handles cover letters using the **HCPA formula** (Hook, Connection, Proof, Ask).
 
@@ -75,7 +77,8 @@ So we built a free, research-backed tool that gives consistent feedback at scale
 
 PRs welcome. The most useful contributions:
 
-- **More before/after examples** — especially for engineering, design, data science roles
+- **More before/after examples** — for any tech role (we have 25+ already, always want more)
+- **Role-specific keyword lists** — help us refine what recruiters scan for per role
 - **Translations** — the rules apply globally; the language barrier is real
 - **Localized rules** — Finnish, German, Japanese, French job markets work differently
 - **Bug reports** — when the tool misses something obvious, open an issue
@@ -88,4 +91,4 @@ MIT. Use it, fork it, ship it. Just don't claim you built it from scratch — li
 
 ## Acknowledgments
 
-Research synthesizes advice from: Andrej Karpathy, Marty Cagan, Lenny Rachitsky, Claire Vo, FAANG recruiters (Madison Vitug, Chris Allaire), and 30+ public sources cited in [RESEARCH.md](RESEARCH.md).
+Research synthesizes advice from: Andrej Karpathy, Marty Cagan, Lenny Rachitsky, Claire Vo, FAANG recruiters (Madison Vitug, Chris Allaire), and 50+ public sources cited in [RESEARCH.md](RESEARCH.md).

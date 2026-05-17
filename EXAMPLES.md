@@ -1,237 +1,490 @@
-# Before / After Examples
+# Before/After Examples — All Tech Roles
 
-Concrete examples that show the difference between a 2024-style CV/cover letter and a 2026-style one.
-
-All examples are generic and fictional. To see how the skill handles a real CV, install it and ask it to roast yours.
+Concrete examples showing the difference between weak and strong CVs across every tech role family in 2026.
 
 ---
 
-## CV Bullet Examples
+## Table of Contents
 
-### Example 1: Shipped Evidence (Senior PM, B2B SaaS)
-
-**Before (2.5/5)**
-> Worked on identity migration project at large enterprise SaaS company, collaborating with multiple teams to improve authentication.
-
-**After (4.5/5)**
-> Led the product side of a company-wide identity migration — consolidating a legacy identity service into a unified Auth0 tenant affecting 500+ enterprise customers, 55,000+ user accounts, and 10+ product teams. Drove the design phase to completion within 5 months.
-
-**Why it works:**
-- Named system (Auth0) — keyword match for ATS
-- Quantified scope (500+, 55,000+, 10+)
-- Quantified speed (5 months)
-- Action verbs ("Led," "Drove") with clear ownership
-
----
-
-### Example 2: Quantified Process Improvement (Senior PM)
-
-**Before (3.0/5)**
-> Improved backlog refinement process for the team.
-
-**After (4.5/5)**
-> Built a structured refinement process from scratch — every sprint now starts with 100% of items refined and prioritized, creating a 4-week rolling pipeline that eliminated developer idle time.
-
-**Why it works:**
-- Process number (100% refined)
-- Speed number (4-week pipeline)
-- Outcome stated ("eliminated developer idle time")
+1. [Software Engineer Examples](#software-engineer-examples)
+2. [Data Engineer Examples](#data-engineer-examples)
+3. [ML / AI Engineer Examples](#ml--ai-engineer-examples)
+4. [DevOps / SRE / Platform Examples](#devops--sre--platform-examples)
+5. [UX/UI / Product Designer Examples](#uxui--product-designer-examples)
+6. [Security Engineer Examples](#security-engineer-examples)
+7. [Engineering Manager Examples](#engineering-manager-examples)
+8. [TPM Examples](#tpm-examples)
+9. [QA / SDET Examples](#qa--sdet-examples)
+10. [Solutions Engineer / DevRel Examples](#solutions-engineer--devrel-examples)
+11. [Product Manager Examples](#product-manager-examples)
+12. [Summary Section Examples](#summary-section-examples)
+13. [Cover Letter Examples](#cover-letter-examples)
+14. [Soft Skills Conversion Table](#soft-skills-conversion-table)
+15. [Anti-Patterns Caught in the Wild](#anti-patterns-caught-in-the-wild)
 
 ---
 
-### Example 3: AI Tooling Visibility (PM with daily AI use)
+## Software Engineer Examples
+
+### Backend: Shipped Evidence
 
 **Before (2.0/5)**
-> Familiar with AI tools and LLMs.
+> Worked on backend services for the payment team.
 
 **After (4.5/5)**
-> Daily user of Cursor and Claude Code for product spec generation, mockup creation, and prototyping. Built an internal PM tool using Claude Sonnet 4.5 with role-based prompting (PM, Designer, BA). Completed Andrew Ng's Agentic AI course on DeepLearning.AI.
+> Designed and shipped a high-throughput REST API in Python/FastAPI serving 50M+ requests/day with 99.98% uptime, processing $3.2M in daily payment volume across 15 countries.
 
-**Why it works:**
-- Specific tools (Cursor, Claude Code, Claude Sonnet 4.5)
-- Specific use case (spec generation, mockups)
-- Course named with credibility (Andrew Ng / DeepLearning.AI)
-- Shows shipped work, not just tool familiarity
+**Why it works:** Named tech (FastAPI), scale (50M req/day), reliability (99.98%), business context ($3.2M, 15 countries).
 
 ---
 
-### Example 4: Side Project (Builder mindset)
-
-**Before (3.0/5)**
-> Built a personal price tracking tool.
-
-**After (4.5/5)**
-> Built and shipped a grocery price tracker using n8n + Puppeteer scraping a public retail GraphQL API. Saves 20 minutes/week of manual price comparison and ~€500/year on grocery spend.
-
-**Why it works:**
-- Tools named (n8n, Puppeteer, GraphQL)
-- Real outcome (€500/year, 20 min/week)
-- Specific (named API)
-- Shows builder mindset
-
----
-
-### Example 5: AI Engineer Production Bullet
+### Frontend: Quantified Impact
 
 **Before (2.5/5)**
-> Worked on machine learning models for the recommendation system. Improved performance.
+> Built React components and improved page performance.
 
 **After (4.5/5)**
-> Shipped a RAG-based recommendation feature in production using LangChain + pgvector + OpenAI text-embedding-3-large, serving 200K daily active users. Reduced latency from 1.2s to 380ms by adding response streaming and re-ranking with bge-reranker-v2.
+> Rebuilt the checkout flow in React + Next.js, reducing Largest Contentful Paint from 4.2s to 1.1s and increasing conversion rate by 18% across 2M monthly visitors.
 
-**Why it works:**
-- Specific stack (LangChain, pgvector, OpenAI, bge-reranker)
-- Production scale (200K DAU)
-- Quantified perf delta (1.2s → 380ms)
-- Shows full ownership of the optimization decision
+**Why it works:** Specific metrics (LCP, conversion %), named framework (React + Next.js), user scale (2M).
+
+---
+
+### Full-Stack: AI Tooling Visibility
+
+**Before (2.0/5)**
+> Used various AI tools to improve development speed.
+
+**After (4.5/5)**
+> Ship 3-4x faster using Cursor + Claude Code for implementation, code review, and test generation. Built an internal tool with Claude Sonnet 4 that auto-generates migration scripts from schema diffs, saving the team 8 hours/week.
+
+**Why it works:** Specific tools (Cursor, Claude Code, Claude Sonnet 4), quantified speed (3-4x), quantified savings (8 hr/wk), real outcome (migration scripts).
+
+---
+
+## Data Engineer Examples
+
+### Pipeline Reliability
+
+**Before (2.5/5)**
+> Maintained data pipelines and ensured data quality.
+
+**After (4.5/5)**
+> Rebuilt the core ELT pipeline in dbt + Airflow on Snowflake, processing 2.3B rows/day with 99.95% SLA compliance. Added Great Expectations data quality checks that caught 340+ schema-breaking changes before they reached production in 12 months.
+
+**Why it works:** Named stack (dbt, Airflow, Snowflake), scale (2.3B rows/day), reliability (99.95% SLA), prevention metric (340+ catches).
+
+---
+
+### Real-Time Streaming
+
+**Before (2.0/5)**
+> Worked on streaming data infrastructure.
+
+**After (4.5/5)**
+> Designed a Kafka + Flink streaming pipeline ingesting 500K events/second from 12 microservices into Delta Lake, enabling real-time fraud detection that blocked $4.2M in fraudulent transactions in Q1 2026.
+
+**Why it works:** Named tech (Kafka, Flink, Delta Lake), throughput (500K events/sec), business outcome ($4.2M fraud blocked), timeliness (Q1 2026).
+
+---
+
+## ML / AI Engineer Examples
+
+### Production ML
+
+**Before (2.5/5)**
+> Built machine learning models for recommendation system.
+
+**After (4.5/5)**
+> Shipped a two-tower recommendation model in PyTorch serving 12M DAU with p99 latency of 45ms. Optimized with TensorRT quantization, cutting GPU costs by 62% while maintaining 98.3% of offline NDCG.
+
+**Why it works:** Named framework (PyTorch), scale (12M DAU), latency (p99 45ms), cost optimization (62%), quality metric (NDCG).
+
+---
+
+### RAG Pipeline
+
+**Before (2.0/5)**
+> Implemented RAG system for document search.
+
+**After (4.5/5)**
+> Built a hybrid RAG pipeline using LangChain + pgvector with re-ranking (Cohere), achieving 94% answer accuracy on internal knowledge base of 50K+ documents. Reduced hallucination rate from 23% to 4.1% using structured citation grounding and DeepEval automated testing.
+
+**Why it works:** Named stack (LangChain, pgvector, Cohere, DeepEval), accuracy (94%), hallucination reduction (23% to 4.1%), corpus scale (50K docs).
+
+---
+
+## DevOps / SRE / Platform Examples
+
+### Infrastructure Scale
+
+**Before (2.5/5)**
+> Managed Kubernetes clusters and CI/CD pipelines.
+
+**After (4.5/5)**
+> Operated 14 production Kubernetes clusters across 3 AWS regions serving 200+ microservices. Designed the multi-cluster ArgoCD GitOps deployment pipeline that handles 500+ deployments/week with zero-downtime rollouts.
+
+**Why it works:** Scale (14 clusters, 200+ services, 500+ deploys/wk), named tools (Kubernetes, AWS, ArgoCD), practice (GitOps, zero-downtime).
+
+---
+
+### Platform Engineering: Multiplier Work
+
+**Before (2.0/5)**
+> Built internal developer tools.
+
+**After (4.5/5)**
+> Built an Internal Developer Platform on Backstage with golden path templates for 6 service types, adopted by 180+ engineers. Cut new service creation from 3 days to 15 minutes and reduced developer onboarding time by 60%.
+
+**Why it works:** Named tool (Backstage), adoption (180+ engineers), speed (3 days to 15 min), multiplier framing (onboarding -60%).
+
+---
+
+### SRE: Incident & Reliability
+
+**Before (2.5/5)**
+> Improved system reliability and reduced downtime.
+
+**After (4.5/5)**
+> Established SLO-based reliability program: defined error budgets for 45 services, reduced MTTR from 47 minutes to 8 minutes, and improved P1 incident frequency from 12/month to 3/month over 18 months using Prometheus + Grafana + PagerDuty automation.
+
+**Why it works:** Named methodology (SLO, error budgets), scale (45 services), quantified improvement (MTTR 47m to 8m, incidents 12 to 3), named tools, timeframe.
+
+---
+
+## UX/UI / Product Designer Examples
+
+### Shipped Design with Metrics
+
+**Before (2.5/5)**
+> Designed the new onboarding experience for the mobile app.
+
+**After (4.5/5)**
+> Redesigned the mobile onboarding flow from a 7-step wizard to a 3-step progressive disclosure pattern. Ran 12 usability tests, iterated on 4 prototypes in Figma, and shipped to 800K MAU. Result: onboarding completion rate increased from 34% to 71% and Day-7 retention improved by 22%.
+
+**Why it works:** Specific design decision (7-step to 3-step), research evidence (12 usability tests, 4 prototypes), tool (Figma), scale (800K MAU), outcome (34% to 71%, +22% retention).
+
+---
+
+### Design System
+
+**Before (2.0/5)**
+> Created design system components.
+
+**After (4.5/5)**
+> Built and maintained a component library of 120+ Figma components with design tokens synced to Storybook. Adopted by 4 product teams, reducing design-to-dev handoff time by 40% and eliminating visual inconsistency bugs (from 15/sprint to 0).
+
+**Why it works:** Scale (120+ components), tooling (Figma, Storybook, tokens), adoption (4 teams), impact (40% faster handoff, bugs eliminated).
+
+---
+
+### Research-Driven Decision
+
+**Before (2.0/5)**
+> Conducted user research to improve the product.
+
+**After (4.5/5)**
+> Led a discovery sprint with 8 customer interviews, 200-response survey, and Hotjar session analysis revealing that 62% of users abandoned the pricing page within 10 seconds. Redesigned the pricing comparison with interactive feature matrix, increasing plan upgrade conversion by 34%.
+
+**Why it works:** Named methods (interviews, survey, Hotjar), specific finding (62% abandon), specific solution (interactive matrix), business outcome (+34% conversion).
+
+---
+
+## Security Engineer Examples
+
+### Vulnerability Management
+
+**Before (2.5/5)**
+> Performed security assessments and vulnerability scanning.
+
+**After (4.5/5)**
+> Ran quarterly penetration tests across 30+ microservices, identifying and remediating 156 vulnerabilities (12 critical) in 2025. Integrated Snyk + Trivy into CI/CD pipeline, catching 89% of dependency vulnerabilities before merge.
+
+**Why it works:** Scale (30+ services), quantified output (156 vulns, 12 critical), tooling (Snyk, Trivy), prevention rate (89% pre-merge).
+
+---
+
+### DevSecOps Integration
+
+**Before (2.0/5)**
+> Improved security in the development process.
+
+**After (4.5/5)**
+> Designed and deployed a DevSecOps pipeline using Checkov for IaC scanning, OPA/Rego for policy-as-code, and HashiCorp Vault for secrets management across 8 engineering teams. Reduced secrets-in-code incidents from 23/quarter to 0 and achieved SOC 2 Type II compliance 2 months ahead of schedule.
+
+**Why it works:** Named tools (Checkov, OPA/Rego, Vault), scale (8 teams), elimination metric (23 to 0), compliance outcome (SOC 2 ahead of schedule).
+
+---
+
+## Engineering Manager Examples
+
+### Team Delivery
+
+**Before (2.5/5)**
+> Led a team of engineers to deliver projects on time.
+
+**After (4.5/5)**
+> Grew the platform team from 4 to 12 engineers over 18 months while maintaining 92% sprint goal completion. Shipped the Auth0 migration (500+ customers, 55K user accounts) and two major API versioning releases, reducing customer-reported auth issues by 78%.
+
+**Why it works:** Team growth (4 to 12), delivery metric (92% sprint goals), specific projects named, customer impact (78% fewer issues).
+
+---
+
+### People Development
+
+**Before (2.0/5)**
+> Mentored team members and helped them grow in their careers.
+
+**After (4.5/5)**
+> Promoted 4 engineers (2 to senior, 2 to staff) over 2 years. Implemented structured growth framework with bi-weekly career conversations, resulting in 95% retention rate in a team where the company average was 72%. One report went on to lead a 15-person team.
+
+**Why it works:** Specific promotions (4 people, specific levels), retention quantified (95% vs 72% company avg), career outcome (report became a lead).
+
+---
+
+## TPM Examples
+
+### Program Coordination
+
+**Before (2.5/5)**
+> Managed cross-functional technical programs.
+
+**After (4.5/5)**
+> Coordinated a 5-team, 60-engineer cloud migration program moving 200+ microservices from on-prem to AWS over 14 months. Managed 12 critical dependencies, resolved 45 blockers across teams, and delivered 2 weeks ahead of schedule with zero production incidents during cutover.
+
+**Why it works:** Scale (5 teams, 60 engineers, 200+ services), specific program (cloud migration), dependency management (12 deps, 45 blockers), outcome (ahead of schedule, zero incidents).
+
+---
+
+### Risk Management
+
+**Before (2.0/5)**
+> Identified and mitigated project risks.
+
+**After (4.5/5)**
+> Built a dependency risk scoring system in JIRA that surfaced 8 critical-path blockers 3+ weeks before they would have impacted delivery. Introduced weekly cross-team syncs that reduced inter-team blocker resolution time from 11 days to 2.5 days.
+
+**Why it works:** Specific tool (JIRA), quantified early warning (8 blockers, 3+ weeks early), process improvement (blocker resolution 11d to 2.5d).
+
+---
+
+## QA / SDET Examples
+
+### Test Automation
+
+**Before (2.5/5)**
+> Automated test cases and improved test coverage.
+
+**After (4.5/5)**
+> Built a Playwright end-to-end test suite covering 340 critical user flows, running in GitHub Actions with parallel execution. Reduced regression testing from 3 days of manual effort to 45 minutes automated, catching 94% of regressions before production.
+
+**Why it works:** Named framework (Playwright, GitHub Actions), scale (340 flows), speed (3 days to 45 min), effectiveness (94% catch rate).
+
+---
+
+### AI Product Testing
+
+**Before (2.0/5)**
+> Tested AI features and reported bugs.
+
+**After (4.5/5)**
+> Designed evaluation framework for the AI chatbot's response quality: built 500-question golden dataset, automated LLM-as-judge scoring pipeline using Claude, and established quality gates that prevented 12 degraded model versions from reaching production in Q1 2026.
+
+**Why it works:** Specific methodology (golden dataset, LLM-as-judge), scale (500 questions), quantified prevention (12 bad versions caught), modern tooling.
+
+---
+
+## Solutions Engineer / DevRel Examples
+
+### Solutions Engineering
+
+**Before (2.5/5)**
+> Supported sales team with technical demos and customer calls.
+
+**After (4.5/5)**
+> Led 80+ technical discovery calls and delivered 45 custom product demos in 2025, contributing to $8.2M in closed ARR. Built a reusable demo environment that cut POC setup time from 2 weeks to 2 hours and increased demo-to-close rate by 28%.
+
+**Why it works:** Volume (80+ calls, 45 demos), revenue impact ($8.2M ARR), efficiency (2 wk to 2 hr), conversion metric (+28%).
+
+---
+
+### Developer Relations
+
+**Before (2.0/5)**
+> Created content and engaged with the developer community.
+
+**After (4.5/5)**
+> Published 24 technical tutorials (850K total views), spoke at 6 conferences (KubeCon, React Summit), and maintained 3 open-source SDKs with 12K+ combined GitHub stars. Developer sign-ups from content attributed to 35% of quarterly new activations.
+
+**Why it works:** Volume (24 tutorials, 6 conferences), reach (850K views, 12K stars), named conferences, business attribution (35% of activations).
+
+---
+
+## Product Manager Examples
+
+### AI Product Ship
+
+**Before (2.5/5)**
+> Led the development of AI features for the platform.
+
+**After (4.5/5)**
+> Owned the AI-powered search feature from discovery to launch: ran 15 user interviews, defined the RAG architecture with engineering, shipped to 200K users, and achieved 73% task completion rate (up from 41% with keyword search). Reduced hallucination rate from 18% to 3.2% through iterative prompt engineering and user feedback loops.
+
+**Why it works:** Full lifecycle visible, quantified scope (200K users), specific improvement (41% to 73% task completion), technical depth (RAG, hallucination rate).
+
+---
+
+### Platform PM
+
+**Before (2.0/5)**
+> Managed the authentication and identity platform.
+
+**After (4.5/5)**
+> Led Auth0 migration design phase to 100% completion within 5 months across 10+ product teams and 500+ customers. Built 4-week rolling refinement pipeline that eliminated developer idle time. Coordinated with 100+ engineers to consolidate 3 separate identity systems into 1.
+
+**Why it works:** Quantified timeline (5 months), scale (10+ teams, 500+ customers, 100+ engineers), process metric (100% refined), consolidation (3 to 1).
 
 ---
 
 ## Summary Section Examples
 
-### Before (2.5/5)
-> Results-oriented Senior Product Manager with 10+ years of experience driving cross-functional initiatives and delivering robust solutions in fast-paced environments. Passionate about leveraging cutting-edge AI to drive innovation.
+### Software Engineer
 
-**Problems:**
-- "Results-oriented" — empty signal
-- "Robust solutions" — buzzword
-- "Fast-paced environments" — cliché
-- "Passionate about" — empty
-- "Leveraging cutting-edge AI" — buzzword soup
-- No specific company, no specific number, no specific tool
+**Before (2.0/5)**
+> Experienced software engineer with strong problem-solving skills and a passion for building scalable systems. Proven track record of delivering high-quality software in fast-paced environments.
 
-### After (4.5/5)
-> A product manager who shipped 10+ enterprise integrations adopted by 500+ B2B clients, then led a company-wide identity migration affecting 55,000+ user accounts across 10+ teams in under 5 months. Daily user of Cursor and Claude Code for spec generation; recently completed Andrew Ng's Agentic AI course. The pattern across every role: listen first, learn fast, and make it easier for the people around me to do their best work.
+**Problems:** Every phrase is a cliche. No specifics. Could be anyone.
 
-**Why it works:**
-- Quantified scope at every step (10+ integrations, 500+ clients, 55,000+ users, 10+ teams, 5 months)
-- AI tools named (Cursor, Claude Code) with specific use case
-- Course named with credible source
-- No buzzwords
-- Distinct closing line gives the candidate a voice
+**After (4.5/5)**
+> Backend engineer with 6 years building high-throughput systems in Go and Python. At Stripe, designed the payment retry engine processing $2.1B/month across 35 countries. At Datadog, shipped the real-time anomaly detection pipeline handling 500K metrics/second. Currently exploring AI-augmented development with Cursor and Claude Code, building open-source tools for developer productivity.
+
+**Why it works:** Named companies, named tech, specific systems, quantified scale, current AI activity.
+
+---
+
+### Designer
+
+**Before (2.0/5)**
+> Creative and detail-oriented product designer passionate about creating beautiful, user-centered experiences that delight users and drive business results.
+
+**After (4.5/5)**
+> Product designer who turns ambiguity into shipped features. At Shopify, led the checkout redesign that increased mobile conversion by 18% across 2M merchants. At Figma, built the component library used by 400+ internal designers. Process-driven: every project starts with research, every decision has a metric, every handoff has documentation. Portfolio: designername.com
+
+**Why it works:** Specific companies, quantified outcomes, methodology visible, portfolio linked.
+
+---
+
+### DevOps/SRE
+
+**Before (2.0/5)**
+> DevOps engineer with extensive experience in cloud infrastructure, CI/CD, and automation. Strong knowledge of AWS and Kubernetes.
+
+**After (4.5/5)**
+> SRE who thinks in error budgets, not uptime percentages. At Spotify, operated 200+ microservices across 14 Kubernetes clusters with 99.99% availability. Built the GitOps deployment pipeline that handles 500+ deploys/week. Currently building an open-source Terraform module library for multi-cloud compliance (github.com/username/terraform-compliance).
+
+**Why it works:** Methodology signal (error budgets), named company and tech, scale numbers, open-source link.
 
 ---
 
 ## Cover Letter Examples
 
-### Hook Comparison
+### SWE Hook Comparison
 
 **Before (1.5/5)**
-> I am writing to express my interest in the Product Manager position at Acme Learning. I am very excited about the opportunity to contribute to your team.
+> I am writing to express my interest in the Senior Backend Engineer position. I have 8 years of experience and believe I would be a great fit.
 
 **After (4.5/5)**
-> Your AI Tutor pilot for the Bingel platform last quarter caught my attention — the way you combined adaptive practice with teacher oversight is exactly the kind of "AI as scaffolding, not replacement" approach I've been advocating for in my own product work.
-
-**Why it works:**
-- References specific recent company work
-- Has a point of view (AI as scaffolding)
-- Bridges to candidate's perspective immediately
+> Your migration from a monolith to event-driven microservices on Kafka caught my eye in your recent engineering blog post. At Stripe, I led a similar decomposition for the payment retry system, and the lessons about eventual consistency under high write loads are still the hardest problems I've solved.
 
 ---
 
-### Connection Comparison
-
-**Before (2.0/5)**
-> I have many years of product management experience and have worked with various stakeholders. I believe I would be a great fit for your team and could leverage my skills to drive results for your business.
-
-**After (4.5/5)**
-> Your job description mentions "owning the AI roadmap for adaptive learning experiences." I led the product side of a company-wide Auth0 migration affecting 500+ customers and 10+ product teams — the same kind of cross-team coordination challenge, scaled across enterprise B2B. I'm now ready to apply that pattern to AI-powered features instead of identity infrastructure.
-
-**Why it works:**
-- Quotes the JD verbatim
-- Maps to specific candidate experience
-- Quantified
-- Clear bridge ("the same kind of...")
-
----
-
-### Proof Comparison
+### Designer Hook
 
 **Before (1.5/5)**
-> I am a strategic product leader with a proven track record of driving stakeholder alignment, defining product vision, and delivering cross-functional results in fast-paced environments. I leverage best practices to optimize team performance.
+> I am excited to apply for the Product Designer role at Figma. As a passionate designer with 5 years of experience, I would love to contribute to your team.
 
 **After (4.5/5)**
-> Three concrete examples of how I work: (1) I built a structured refinement process that took the team from chaotic planning to 100% refined backlog with a 4-week rolling pipeline. (2) I shipped 10+ enterprise integrations adopted by 500+ B2B customers including [Customer A, Customer B, Customer C]. (3) I built an internal PM Dashboard using Claude Sonnet 4.5 with multi-agent orchestration to test exactly the kind of agentic patterns Acme's adaptive learning needs.
-
-**Why it works:**
-- Three discrete proofs
-- Each quantified
-- Each names tools or customers
-- Last proof connects directly to the company's work
+> Config 2026 sold me on Figma's bet that design systems will be the API layer between design and engineering. I've been living that thesis: at Shopify, I built the component library that 400+ designers use daily, and the hardest lesson was that adoption is a product problem, not a design problem.
 
 ---
 
-### Ask Comparison
+### DevOps Proof Paragraph
 
-**Before (2.0/5)**
-> Thank you for considering my application. I look forward to hearing from you soon.
+**Before (1.5/5)**
+> I have extensive experience with Kubernetes, Terraform, and AWS. I am proficient in CI/CD and have managed infrastructure for several companies. I am confident I can bring value to your team.
 
 **After (4.5/5)**
-> I'd value 30 minutes to walk through how the agentic patterns from my PM Dashboard could apply to the AI Tutor roadmap. I'm reachable at [email] or via LinkedIn — happy to do a written async exchange if that's easier on your end.
-
-**Why it works:**
-- Specific time ask (30 min)
-- Specific topic (agentic patterns → AI Tutor)
-- Multiple contact options
-- Acknowledges the recruiter's time
+> Three examples: (1) I built the ArgoCD-based GitOps pipeline at Spotify that handles 500+ deployments/week across 14 clusters with zero-downtime rollouts. (2) I designed the SLO framework for 45 services that reduced P1 incidents from 12/month to 3/month. (3) I open-sourced a Terraform module library for multi-cloud compliance that has 2K+ GitHub stars and is used by 50+ companies.
 
 ---
 
-## Soft Skills Conversion Examples
+## Soft Skills Conversion Table
 
-| Cliché claim | Specific action equivalent |
+| Cliche claim | Specific action equivalent |
 |---|---|
-| "Strong leadership skills" | "Mentored 3 junior engineers; 2 promoted within 18 months" |
+| "Strong leadership skills" | "Grew team from 4 to 12; promoted 4 engineers (2 to senior, 2 to staff) in 2 years" |
 | "Excellent communication" | "Ran weekly sync across 4 time zones for 2 years; published 12 internal RFCs" |
-| "Cross-functional collaboration" | "Coordinated identity migration across 10+ product teams and 100+ engineers" |
-| "Strategic thinker" | "Designed Auth0 consolidation roadmap reducing 3 separate identity systems to 1" |
-| "Problem solver" | "Diagnosed slow planning cycles → built refinement process → cut idle time by 4 weeks" |
-| "Detail-oriented" | "Caught 3 critical security gaps during identity migration design review" |
-| "Self-starter" | "Built and shipped a home automation platform with 40 sensors and 18 automations on personal time" |
-| "Team player" | "Pair-programmed with engineers daily during Cursor onboarding for the team" |
+| "Cross-functional collaboration" | "Coordinated migration across 10+ product teams and 100+ engineers" |
+| "Strategic thinker" | "Designed consolidation roadmap reducing 3 identity systems to 1" |
+| "Problem solver" | "Diagnosed slow pipelines, rebuilt in dbt + Airflow, cut runtime from 6h to 45min" |
+| "Detail-oriented" | "Caught 3 critical security gaps during infrastructure review" |
+| "Self-starter" | "Built and shipped open-source tool with 2K+ GitHub stars on personal time" |
+| "Team player" | "Pair-programmed with 4 engineers during Kubernetes migration onboarding" |
+| "Passionate about technology" | "Speaker at KubeCon 2025, published 12 technical blog posts in 2025" |
+| "Results-oriented" | "Reduced MTTR from 47 minutes to 8 minutes over 18 months" |
+| "Fast learner" | "Onboarded to Rust codebase, shipped first production PR in 2 weeks" |
+| "Creative problem solver" | "Designed A/B test framework that increased experiment velocity by 3x" |
 
 ---
 
 ## Anti-Patterns Caught in the Wild
 
-### Anti-pattern 1: Multi-column with table layout
-> Resume uses two columns with skills in the left rail.
->
-> **Result:** ATS skips the entire skills column. Candidate appears to have no skills.
->
-> **Fix:** Convert to single column. Move skills above experience.
+### Anti-pattern 1: Multi-column / fancy layout
+> Resume uses two columns, icons, progress bars for skills.
+> **Result:** ATS skips entire sections. Candidate appears to have no skills.
+> **Fix:** Single column, clean formatting. Save the design for your portfolio site.
 
-### Anti-pattern 2: Generic AI claim
-> "Passionate about leveraging AI to drive innovation."
->
+### Anti-pattern 2: Generic tech enthusiasm
+> "Passionate about leveraging cutting-edge cloud-native technologies."
 > **Result:** Pattern-matched as low-signal by AI screeners. Filtered out.
->
-> **Fix:** Replace with one specific shipped AI project, named tool, named outcome.
+> **Fix:** Replace with one specific system, one specific outcome: "Built GitOps deployment pipeline on ArgoCD handling 500+ deploys/week."
 
-### Anti-pattern 3: Vague scope
-> "Worked on a large-scale migration project."
->
+### Anti-pattern 3: Vague scale
+> "Worked on large-scale distributed systems."
 > **Result:** Reader has no idea if "large-scale" means 100 users or 100M users.
->
-> **Fix:** "Migration affecting 500+ customers and 55,000+ user accounts."
+> **Fix:** "Distributed system processing 50M requests/day across 3 AWS regions with 99.98% uptime."
 
-### Anti-pattern 4: Cover letter mirrors resume
-> Cover letter restates the same bullets as the resume in paragraph form.
->
-> **Result:** Wasted opportunity. Recruiter learns nothing new.
->
-> **Fix:** Cover letter tells the story BEHIND the bullets. Why this company, why now, why you.
+### Anti-pattern 4: Responsibility without ownership
+> "Responsible for maintaining CI/CD pipelines."
+> **Result:** Sounds like the work was assigned, not owned. No initiative visible.
+> **Fix:** "Rebuilt CI/CD pipeline in GitHub Actions, cutting build time from 45 min to 4 min and enabling 500+ deploys/week."
 
 ### Anti-pattern 5: Certifications without shipped work
-> Lists 8 AI certifications but no actual AI projects.
->
-> **Result:** Reads as "studied AI" not "shipped AI." Rejected.
->
-> **Fix:** Build one project (even small) using what was learned. Lead with the project; mention the cert as supporting evidence.
+> Lists AWS Solutions Architect, CKA, Terraform Associate, but no infrastructure projects.
+> **Result:** Reads as "studied DevOps" not "did DevOps." Filtered out at senior levels.
+> **Fix:** Lead with the project; mention the cert as supporting context.
 
-### Anti-pattern 6: Claiming work you didn't do
-> Lists a "Built X" project that was actually customized from someone else's repo.
->
-> **Result:** Interview death. The moment a hiring manager probes architecture decisions, the lie surfaces. They stop trusting the rest of the CV instantly.
->
-> **Fix:** Reframe honestly ("Customized and extended an open-source X for my workflow") OR remove entirely and replace with a project that's 100% yours.
+### Anti-pattern 6: Designer CV without portfolio link
+> Beautiful CV with impressive bullet points, but no portfolio URL.
+> **Result:** Immediately disqualified. For designers, no portfolio = no interview.
+> **Fix:** Portfolio link in header AND summary. Make it the first thing visible.
+
+### Anti-pattern 7: Keyword stuffing
+> Skills section lists 50+ technologies including ones never used.
+> **Result:** Modern AI screeners detect padding and penalize. Recruiters spot it in seconds.
+> **Fix:** List only technologies you can discuss in an interview. Match naturally in experience bullets.
+
+### Anti-pattern 8: Manager CV that reads like an IC CV
+> Engineering manager resume is all technical projects, no people or organizational impact.
+> **Result:** Looks like an IC who got a title bump, not a real leader.
+> **Fix:** Lead with team growth, promotions, retention, delivery velocity, org-level outcomes.
+
+### Anti-pattern 9: Cover letter that mirrors resume
+> Cover letter restates the same bullets as the resume in paragraph form.
+> **Result:** Wasted opportunity. Recruiter learns nothing new.
+> **Fix:** Cover letter tells the story BEHIND the bullets. Why this company, why now, why you.
+
+### Anti-pattern 10: Missing infrastructure/deployment for ML
+> ML engineer resume is all model architecture, no serving or deployment.
+> **Result:** 68% of ML resumes rejected for missing MLOps keywords.
+> **Fix:** Include serving framework (vLLM, Ray Serve), monitoring, cost optimization, latency numbers.

@@ -1,17 +1,17 @@
 ---
 name: ai-cv-roast
 description: >-
-  Evaluate and build CVs and cover letters for AI Product Manager, AI Engineer, and
-  technical PM roles in 2026. Use when the user asks to review a CV, evaluate a cover
-  letter, write a tailored CV for a specific job, draft a cover letter, or asks "how
-  does this look" / "is this good" about job application materials. Reflects 2026 market
-  research from FAANG recruiters, AI hiring managers, and opinion leaders (Karpathy,
-  Lenny Rachitsky, Marty Cagan, Claire Vo).
+  Evaluate and build CVs and cover letters for ALL tech and software roles in 2026:
+  Software Engineers, Data/ML Engineers, DevOps/SRE, Designers, Security, EMs, TPMs,
+  QA/SDET, Solutions/DevRel, and Product Managers. Use when the user asks to review a CV,
+  evaluate a cover letter, write a tailored CV for a specific job, draft a cover letter,
+  or asks "how does this look" / "is this good" about job application materials. Reflects
+  2026 market research from FAANG recruiters, hiring managers, and opinion leaders.
 ---
 
 # AI CV Roast
 
-This skill captures what actually works (and fails) when applying to AI PM, AI Engineer, and technical PM roles in 2026. Based on deep research across top recruiters and opinion leaders.
+This skill captures what actually works (and fails) when applying to any tech/software role in 2026. Based on deep research across top recruiters, hiring managers, and opinion leaders. Supports Software Engineers, Data/ML Engineers, DevOps/SRE, Designers, Security Engineers, EMs, TPMs, QA/SDET, Solutions/DevRel, and Product Managers.
 
 For full research evidence, see [RESEARCH.md](RESEARCH.md).
 For detailed evaluation rubrics, see [EVALUATION.md](EVALUATION.md).
@@ -21,9 +21,9 @@ For concrete before/after examples, see [EXAMPLES.md](EXAMPLES.md).
 
 ## Core Truth (Repeat This in Every Evaluation)
 
-> In 2026, "I've used AI tools to ship something real" beats "I have an AI certification" by 100x.
+> In 2026, "I've shipped something real" beats any certification, buzzword, or generic claim by 100x.
 
-Every evaluation and rewrite must prioritize **evidence of shipped work** over credentials, theory, or buzzwords.
+Every evaluation and rewrite must prioritize **evidence of shipped work** over credentials, theory, or buzzwords. This applies to ALL tech roles. AI fluency is a +56% salary premium across all roles, not just AI-specific ones.
 
 ---
 
@@ -31,13 +31,16 @@ Every evaluation and rewrite must prioritize **evidence of shipped work** over c
 
 | Reality | Implication |
 |---|---|
-| 300% growth in AI PM postings since 2023 | Market is hot |
-| 3x more applications per AI PM role | Differentiation matters more |
-| 70% of companies use AI to screen resumes | ATS-friendly is non-negotiable |
+| 537,000 active U.S. tech listings, +8.9% YoY | Market is growing but selective |
+| 97.8% of Fortune 500 use ATS | ATS-friendly is non-negotiable |
 | 75% of qualified candidates rejected by ATS | Format MUST parse cleanly |
-| 71% of hiring managers prefer junior + AI skills over senior + no AI | AI tooling experience > years of experience |
-| 47% of employers report AI skills gap | Demonstrated AI builder = scarce currency |
-| Companies hire 1/3 fewer PMs in AI-native firms | Selectivity is high |
+| 70% of companies use AI to screen resumes | Keyword match + impact quantification matter |
+| AI-skilled workers earn 56% more across ALL roles | AI fluency is a premium signal everywhere |
+| Each additional AI skill adds ~$18,000/year | Even non-AI roles benefit |
+| Senior roles outnumber junior 17:1 | Projects + portfolio matter more at entry level |
+| 87% of recruiters check GitHub before interviews | Public proof is critical for engineers |
+| Designers with no portfolio = no interview | Portfolio IS the resume for design |
+| 62% of developers use AI tools daily | AI-augmented workflow is becoming baseline |
 
 ---
 
@@ -73,16 +76,33 @@ Every evaluation and rewrite must prioritize **evidence of shipped work** over c
 
 ## CV Evaluation Framework (Run This When Asked to Review a CV)
 
-Score each dimension 1-5. Global score is the weighted average.
+### Step 0: Detect Role Family
+Before scoring, detect the candidate's role family from their CV content:
+- Software Engineer (Frontend, Backend, Full-stack, Mobile, Embedded)
+- Data & ML (Data Engineer, Data Scientist, ML Engineer, AI Engineer)
+- DevOps / SRE / Platform (DevOps, SRE, Platform Engineer, Cloud Engineer)
+- Design (UX, UI, Product Designer, Interaction Designer)
+- Security (Security Engineer, AppSec, Pentester)
+- Engineering Management (Engineering Manager, Tech Lead, VP Engineering)
+- TPM (Technical Program Manager)
+- QA / SDET (QA Engineer, SDET, Test Automation)
+- Solutions / DevRel (Solutions Engineer, Sales Engineer, Developer Advocate)
+- Product Manager (PM, AI PM, Group PM, Director of Product)
 
-| Dimension | Weight | What you're scoring |
-|---|---|---|
-| **Shipped Evidence** | 30% | Real, in-production AI/PM work with named tools and outcomes |
-| **Quantified Impact** | 20% | Numbers in every bullet (scope, speed, adoption, savings) |
-| **AI Tooling Visibility** | 15% | Cursor, Claude Code, n8n, LangChain, RAG, agents — explicitly named |
-| **ATS Compatibility** | 15% | Single column, no tables, standard headings, parseable PDF |
-| **Keyword Match to JD** | 10% | Exact terminology from posting present in the CV |
-| **Public Proof Surface** | 10% | LinkedIn polished, GitHub active, Medium/blog/X visible |
+### Scoring Dimensions (Role-Adaptive Weights)
+
+Score each dimension 1-5. Global score is the weighted average. Weights shift by role:
+
+| Dimension | SWE | Data/ML | DevOps | Design | Security | EM | TPM | QA | SE/DevRel | PM |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Shipped Evidence | 30% | 25% | 25% | 20% | 25% | 25% | 20% | 25% | 20% | 30% |
+| Quantified Impact | 25% | 25% | 25% | 15% | 20% | 25% | 25% | 20% | 20% | 20% |
+| Tech/Tool Visibility | 15% | 15% | 15% | 10% | 15% | 10% | 10% | 15% | 15% | 15% |
+| ATS Compatibility | 10% | 10% | 10% | 5% | 10% | 10% | 15% | 10% | 10% | 15% |
+| Keyword Match | 10% | 10% | 10% | 10% | 15% | 10% | 15% | 15% | 10% | 10% |
+| Public Proof Surface | 10% | 15% | 15% | 40% | 15% | 20% | 15% | 15% | 25% | 10% |
+
+Designers get 40% Public Proof (portfolio is mandatory). SE/DevRel get 25% (communication IS the job).
 
 **Score interpretation:**
 - 4.5+ → Strong, recommend applying
@@ -102,14 +122,16 @@ For the full evaluation rubric (with each dimension scoring guide), see [EVALUAT
 - The target JD (if provided)
 
 ### Step 2: Detect role archetype
-Use one of these AI-era archetypes:
-- AI Product Manager (LLM-powered features)
-- AI Platform / LLMOps PM
-- Agentic / Automation PM
-- AI Engineer (production AI systems)
-- Technical PM (AI-adjacent platform work)
-- Identity / Platform PM
-- Data PM / Analytics PM
+First detect the role family, then select the archetype:
+
+**Product Management:** AI PM, AI Platform/LLMOps PM, Agentic/Automation PM, Technical PM, Identity/Platform PM, Growth/Analytics PM
+**Software Engineering:** Frontend (React/Vue/Angular), Backend (API/systems), Full-Stack, Mobile (iOS/Android), AI/ML Engineer
+**Data:** Data Engineer (pipelines), Data Scientist (experimentation), ML Engineer (serving/MLOps), Analytics Engineer (dbt/BI)
+**Infrastructure:** DevOps (automation/CI/CD), SRE (SLOs/incidents), Platform Engineer (IDP/DX), Cloud Engineer (FinOps), Security/AppSec
+**Management:** Engineering Manager, Tech Lead/Staff+ IC, TPM, Director/VP Engineering
+**Quality:** QA/SDET (automation-first), AI QA (model validation)
+**Customer-Facing:** Solutions/Sales Engineer, Developer Advocate/DevRel, Technical Writer
+**Design:** Product Designer (full-spectrum), UX Designer, UI Designer, Design Systems Lead
 
 ### Step 3: Apply the Impact Bullet Formula
 Every bullet must follow:
@@ -134,12 +156,14 @@ For PMs at large companies who can't claim full company outcomes, use these 5 ca
 | **Adoption** | "Shipped 10+ integrations adopted by 500+ enterprise clients" |
 | **Volume** | "Led 20+ discovery sessions with stakeholders across 10+ teams" |
 
-### Step 5: Add the AI Tooling section if missing
-Include a dedicated section listing AI tools the candidate actually uses:
-- AI coding: Cursor, Claude Code, GitHub Copilot
-- Agentic / workflow: n8n, LangChain, LangGraph, CrewAI
-- LLMs used: Claude, GPT, Gemini, Llama, Mistral
-- Frameworks studied: any with completed coursework or shipped projects
+### Step 5: Add AI Tooling section if relevant
+In 2026, AI-skilled workers earn 56% more across all roles. Include AI tools by role:
+- **Engineers:** Cursor, Claude Code, GitHub Copilot, Continue, Aider
+- **Data/ML:** LangChain, LangGraph, vLLM, Ray Serve, MLflow
+- **Designers:** Midjourney, Galileo AI, Uizard, Relume, AI copy tools
+- **DevOps/SRE:** AI incident triage, AI runbook generation, AI log analysis
+- **Managers/PMs:** AI for PRDs, Cursor, Claude Code, Notion AI, Linear AI
+- **QA:** AI test generation, LLM-as-judge evaluation frameworks
 
 ### Step 6: Verify ATS compatibility
 - Single column ✓
