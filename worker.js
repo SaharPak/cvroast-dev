@@ -12,17 +12,9 @@
 import { handleRoast, handleFetchJd, handleCors } from './functions/api/roast.js';
 import { handleSignup, handleSignupCors } from './functions/api/signup.js';
 import { handleStats, handleStatsCors } from './functions/api/stats.js';
-import { handleFeedback, handleFeedbackCors } from './functions/api/feedback.js';
-
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-
-    if (url.pathname === '/api/feedback') {
-      if (request.method === 'OPTIONS') return handleFeedbackCors();
-      if (request.method === 'POST') return handleFeedback(request, env);
-      return new Response('Method not allowed', { status: 405 });
-    }
 
     if (url.pathname === '/api/roast') {
       if (request.method === 'OPTIONS') return handleCors();
