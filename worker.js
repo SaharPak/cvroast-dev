@@ -48,6 +48,20 @@ export default {
       return new Response('Method not allowed', { status: 405 });
     }
 
-    return env.ASSETS.fetch(request);
+    const response = await env.ASSETS.fetch(request);
+
+    if (url.pathname === '/feedback' || url.pathname === '/feedback.html') {
+      ctx.waitUntil(incrementPageView(env, 'feedback'));
+    }
+
+    return response;
   },
 };
+
+async function incrementPageView(env, page) {
+  if (!env.RATE_LIMIT) return;
+  const key = `views:${page}`;
+  const raw = await env.RATE_LIMIT.get(key);
+  const count = (parseInt(raw, 10) || 0) + 1;
+  await env.RATE_LIMIT.put(key, String(count));
+}

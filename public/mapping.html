@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>چرا این سوالا رو پرسیدیم؟ — Resume Tool Feedback Mapping</title>
+<meta name="description" content="جدول مپینگ سوالات فرم فیدبک cvroast.dev — هر سوال، چرا پرسیدیم و با جوابش چیکار میکنیم. مرور تیمی قبل از انتشار توی کامیونیتی Tech Immigrants.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #111110;
+    --surface: #1a1918;
+    --surface-2: #222120;
+    --surface-3: #2c2a28;
+    --border: #332f2c;
+    --border-soft: #2a2725;
+    --text: #f0ece8;
+    --text-2: #c4beb6;
+    --text-muted: #8a8279;
+    --text-dim: #5c5650;
+    --flame: #ff6b35;
+    --ember: #ff9f1c;
+    --flame-glow: rgba(255, 107, 53, 0.12);
+    --ember-glow: rgba(255, 159, 28, 0.10);
+    --ok: #6ee7b7;
+    --ok-bg: rgba(110, 231, 183, 0.08);
+    --warn: #fcd34d;
+    --bad: #fca5a5;
+    --bad-bg: rgba(252, 165, 165, 0.07);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Vazirmatn', 'DM Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.75;
+  }
+
+  h1, h2, h3 { font-family: 'Vazirmatn', 'Space Grotesk', sans-serif; }
+
+  ::selection { background: var(--flame-glow); color: var(--text); }
+
+  .container {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ember);
+    background: var(--ember-glow);
+    border: 1px solid rgba(255, 159, 28, 0.2);
+    padding: 5px 16px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    direction: ltr;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    margin-bottom: 14px;
+  }
+
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, var(--flame) 0%, var(--ember) 50%, #ffcd69 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero p {
+    font-size: 15px;
+    color: var(--text-2);
+    line-height: 1.85;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .hero .links {
+    margin-top: 22px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .link-btn:hover {
+    color: var(--ember);
+    border-color: rgba(255, 159, 28, 0.3);
+    background: var(--ember-glow);
+  }
+
+  .link-btn .arrow { direction: ltr; }
+
+  /* ===== SECTION ===== */
+  .section {
+    margin-top: 44px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ember);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    direction: ltr;
+    text-align: right;
+  }
+
+  .section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .section .lede {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 22px;
+    line-height: 1.8;
+  }
+
+  /* ===== TEAM MESSAGE CARD ===== */
+  .message-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+    position: relative;
+  }
+
+  .message-card .copy-btn {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 0.15s ease;
+    direction: ltr;
+  }
+
+  .message-card .copy-btn:hover {
+    color: var(--ember);
+    border-color: rgba(255, 159, 28, 0.3);
+    background: var(--ember-glow);
+  }
+
+  .message-card .copy-btn.copied {
+    color: var(--ok);
+    border-color: rgba(110, 231, 183, 0.3);
+    background: var(--ok-bg);
+  }
+
+  .message-body {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.95;
+    white-space: pre-wrap;
+    padding-top: 14px;
+  }
+
+  .message-body strong { color: var(--ember); font-weight: 600; }
+
+  .message-body ol {
+    margin: 14px 24px;
+    padding: 0;
+  }
+
+  .message-body ol li {
+    margin-bottom: 6px;
+    color: var(--text-2);
+  }
+
+  .message-body .deadline {
+    display: inline-block;
+    margin-top: 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--warn);
+    background: rgba(252, 211, 77, 0.08);
+    border: 1px solid rgba(252, 211, 77, 0.2);
+    padding: 6px 14px;
+    border-radius: 8px;
+    direction: ltr;
+  }
+
+  /* ===== PART HEADING ===== */
+  .part-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 36px 0 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .part-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--flame);
+    background: var(--flame-glow);
+    border: 1px solid rgba(255, 107, 53, 0.25);
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    direction: ltr;
+    flex-shrink: 0;
+  }
+
+  .part-heading h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* ===== Q ROWS (mobile-first) ===== */
+  .q-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .q-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .q-row:hover {
+    border-color: var(--border);
+    transform: translateY(-1px);
+  }
+
+  .q-row .q-num {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ember);
+    background: var(--ember-glow);
+    border: 1px solid rgba(255, 159, 28, 0.2);
+    padding: 3px 9px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    direction: ltr;
+  }
+
+  .q-row .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.65;
+  }
+
+  .q-row .why-action {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .q-row .cell {
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .q-row .cell-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    direction: ltr;
+  }
+
+  .q-row .cell-why .cell-label { color: var(--text-muted); }
+  .q-row .cell-action .cell-label { color: var(--ok); }
+
+  .q-row .cell-body {
+    font-size: 13.5px;
+    color: var(--text-2);
+    line-height: 1.7;
+  }
+
+  /* ===== STATS / CTA at bottom ===== */
+  .review-cta {
+    margin-top: 50px;
+    padding: 28px;
+    background: linear-gradient(135deg, var(--ember-glow) 0%, var(--flame-glow) 100%);
+    border: 1px solid rgba(255, 159, 28, 0.25);
+    border-radius: 18px;
+    text-align: center;
+  }
+
+  .review-cta h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .review-cta p {
+    font-size: 14px;
+    color: var(--text-2);
+    margin-bottom: 18px;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111110;
+    background: linear-gradient(135deg, var(--flame), var(--ember));
+    padding: 12px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .cta-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
+  }
+
+  .cta-btn .arrow { direction: ltr; }
+
+  .footer {
+    text-align: center;
+    padding: 36px 0 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .footer a { color: var(--text-muted); text-decoration: none; }
+  .footer a:hover { color: var(--ember); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 700px) {
+    .container { padding: 28px 16px 60px; }
+    .hero h1 { font-size: 26px; }
+    .section h2 { font-size: 18px; }
+    .q-row { padding: 16px; }
+    .q-row .why-action {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .message-card { padding: 22px 18px; }
+    .message-card .copy-btn { top: 14px; left: 14px; }
+    .part-heading { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">Internal · Team Review</div>
+    <h1>چرا این <span class="gradient">سوالا</span> رو پرسیدیم؟</h1>
+    <p>قبل از اینکه فرم فیدبک رو توی کامیونیتی پابلیش کنیم، یه دور تیمی روش بزنیم. این صفحه نشون میده هر سوال چه pain point ای رو هدف گرفته و قراره با جوابش چیکار کنیم. اگه دلیل سوالی برات منطقی نیست، همینجا flag کن.</p>
+    <div class="links">
+      <a class="link-btn" href="https://cvroast.dev/feedback" target="_blank" rel="noopener">دیدن فرم فیدبک <span class="arrow">→</span></a>
+      <a class="link-btn" href="https://cvroast.dev/" target="_blank" rel="noopener">cvroast.dev <span class="arrow">↗</span></a>
+    </div>
+  </div>
+
+  <!-- TEAM REVIEW MESSAGE -->
+  <div class="section">
+    <div class="section-label">For the team</div>
+    <h2>پیام مرور فرم</h2>
+    <p class="lede">این متنیه که برای تیم میفرستم تا قبل از انتشار، فرم رو ببینن. اگه چیزی بنظرت کم/زیاد/گنگه بگو.</p>
+
+    <div class="message-card">
+      <button class="copy-btn" id="copyMsg" type="button">Copy</button>
+      <div class="message-body" id="msgBody">سلام تیم 👋
+
+فرم فیدبک Resume Tool رو روی <strong>cvroast.dev/feedback</strong> آپ کردیم.
+
+قبل از اینکه لینکش رو توی کامیونیتی Tech Immigrants پابلیش کنیم، میخوام شماها یه دور بزنید و فیدبکتون رو بدید.
+
+روی این چیزا نظرتون رو میخوام:
+<ol>
+<li>سوالا واضحن؟ جایی هست که آدم گیج بشه یا دو پهلو باشه؟</li>
+<li>ترتیب سوالا منطقیه؟ (۴ بخش: درباره تو → چالش‌ها → تجربه CV Roast → چی بسازیم)</li>
+<li>آپشن‌ها کامله؟ جوابی هست که بخوای بدی ولی توی گزینه‌ها نباشه؟</li>
+<li>لحن چطوره؟ خودمونی و کامیونیتی هست یا زیادی رسمی شده؟</li>
+<li>طولش چقدره؟ آدم وسطش خسته نمیشه؟ (تارگت: زیر ۳ دقیقه)</li>
+<li>سوالی هست که اضافه‌ست و میشه حذفش کرد؟</li>
+<li>سوالی هست که باید اضافه کنیم ولی نیست؟</li>
+</ol>
+پایین این صفحه جدول کاملی گذاشتم که چرا هر سوال رو پرسیدیم و قراره با جوابش چیکار کنیم — اگه دلیل یه سوال براتون منطقی نبود، حتما بگید.
+
+<span class="deadline">⏰ Deadline: [تاریخ رو بذار]</span>
+
+مرسی 🙏</div>
+    </div>
+  </div>
+
+  <!-- MAPPING TABLE -->
+  <div class="section">
+    <div class="section-label">Question Mapping</div>
+    <h2>چرا هر سوال رو پرسیدیم؟</h2>
+    <p class="lede">هر سوال = یه decision که قراره تو روست بگیریم. اگه ستون "با جوابش چیکار میکنیم" پر نباشه، اون سوال نباید توی فرم باشه.</p>
+
+    <!-- PART 1 -->
+    <div class="part-heading">
+      <span class="part-tag">Part 1 / 4</span>
+      <h3>درباره تو 🙏</h3>
+    </div>
+    <div class="q-grid">
+
+      <div class="q-row">
+        <span class="q-num">Q1</span>
+        <div class="q-text">الان داری جاب سرچ میکنی؟</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">فهمیدن اینکه کاربر اصلی ما کیه — اکتیو جاب سیکر، پسیو، یا کوچ.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">سگمنت‌بندی کاربرا و اولویت‌بندی فیچرها بر اساس نیاز اصلی‌ترین گروه.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q2</span>
+        <div class="q-text">الان کجا زندگی میکنی؟</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">جغرافیای کامیونیتی Tech Immigrants رو بفهمیم — چقدر هنوز توی ایرانن، چقدر بیرونن.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">لوکالایز کردن محتوا، تنظیم زبان فارسی، انتخاب نمونه‌های CV.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q3</span>
+        <div class="q-text">کجا دنبال کار هستی؟ (چند انتخابی)</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">بفهمیم رزومه‌هایی که قراره روست کنیم تارگتشون کدوم مارکته (EU vs US vs ME).</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">تنظیم ATS rules و کیورد دیتابیس بر اساس مارکت تارگت.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q4</span>
+        <div class="q-text">چه پوزیشنی رو تارگت کردی؟</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">اولویت دادن به role family هایی که بیشترین تقاضا رو دارن.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">تخصیص منابع روی scoring engine برای پرتقاضاترین رول‌ها (PM, SWE, Data/ML, Design).</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PART 2 -->
+    <div class="part-heading">
+      <span class="part-tag">Part 2 / 4</span>
+      <h3>چالش‌های رزومه‌نویسی</h3>
+    </div>
+    <div class="q-grid">
+
+      <div class="q-row">
+        <span class="q-num">Q5</span>
+        <div class="q-text">بزرگ‌ترین چالشت توی رزومه نوشتن چیه؟ (تا ۳ تا)</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">فهمیدن pain point اصلی که قراره ابزار حل کنه.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">مستقیم میره توی roadmap — ۳ چالش بالا = ۳ فیچر اولویت‌دار بعدی.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q6</span>
+        <div class="q-text">الان رزومه‌ات رو چطور فیدبک میگیری؟</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">فهمیدن رقبای واقعی ما (ChatGPT، دوستان، کوچ‌ها).</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">پوزیشنینگ محصول — چی داریم که اونا ندارن.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q7</span>
+        <div class="q-text">یه چیز دیگه هم هست که اذیتت میکنه؟ <span style="color:var(--text-dim);font-size:12px;font-weight:400">(متن باز)</span></div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">کشف pain point هایی که ما به ذهنمون نرسیده.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">استخراج تم‌های جدید برای backlog محصول.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PART 3 -->
+    <div class="part-heading">
+      <span class="part-tag">Part 3 / 4</span>
+      <h3>تجربه‌ات از CV Roast (اختیاری)</h3>
+    </div>
+    <div class="q-grid">
+
+      <div class="q-row">
+        <span class="q-num">Q8</span>
+        <div class="q-text">CV Roast رو تست کردی؟</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">فیلتر کردن کسایی که تجربه واقعی دارن از کسایی که فقط نظر میدن.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">جدا کردن دیتای کیفی واقعی از فرضیات. فقط جوابای Q8="بله" روی Q9-Q14 وزن داره.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q9</span>
+        <div class="q-text">نتیجه چقدر مفید بود؟ (۱-۵)</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">NPS واقعی محصول الان.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">باسلاین متریک کیفیت — قبل و بعد از هر آپدیت مقایسه میشه.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q10</span>
+        <div class="q-text">اسکور منصفانه بود؟</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">کالیبراسیون scoring engine — زیادی سخت‌گیره؟ زیادی راحته؟</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">تنظیم وزن‌ها توی rubric، رفع bias هایی که توی الگوریتم نشسته.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q11</span>
+        <div class="q-text">کدوم بخش‌های خروجی مفیدتر بود؟</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">فهمیدن کدوم بخش از output واقعا ارزش داره و کدوم noise ـه.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">حذف بخش‌های بی‌مصرف، تقویت بخش‌های قوی، طراحی مجدد layout.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q12</span>
+        <div class="q-text">بعد از Roast چیکار کردی؟</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">اندازه‌گیری action conversion — آیا فیدبک به تغییر واقعی منجر شد؟</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">متریک activation و retention. اگه کسی فقط دید و رفت یعنی محصول کارش رو نکرده.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q13</span>
+        <div class="q-text">بهترین چیز چی بود؟ <span style="color:var(--text-dim);font-size:12px;font-weight:400">(متن باز)</span></div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">کشف نقاط قوت قابل تقویت، با کلمات خود کاربر.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">محتوای marketing و landing page copy + testimonial section.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q14</span>
+        <div class="q-text">بدترین چیز چی بود؟ <span style="color:var(--text-dim);font-size:12px;font-weight:400">(متن باز)</span></div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">کشف bug ها و friction point ها از زاویه واقعی کاربر.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">bug list و UX fixes اولویت‌دار توی sprint بعدی.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PART 4 -->
+    <div class="part-heading">
+      <span class="part-tag">Part 4 / 4</span>
+      <h3>چی بسازیم که واقعاً کمک کنه؟</h3>
+    </div>
+    <div class="q-grid">
+
+      <div class="q-row">
+        <span class="q-num">Q15</span>
+        <div class="q-text">کدوم قابلیت‌ها رو بیشتر میخوای؟ (تا ۳ تا)</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">اولویت‌بندی roadmap با رای واقعی کاربر، نه حدس تیم.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">۳ فیچر بالا = sprint بعدی. بقیه میره توی backlog با priority واضح.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q16</span>
+        <div class="q-text">حاضری بابتش پول بدی؟</div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">تست willingness to pay قبل از سرمایه‌گذاری روی pricing.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">تصمیم monetization model — subscription vs one-time vs freemium.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q17</span>
+        <div class="q-text">یه چیز دیگه هست بگی؟ <span style="color:var(--text-dim);font-size:12px;font-weight:400">(متن باز)</span></div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">safety net برای فیدبک‌هایی که جا نشدن توی سوالای structured.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">کشف insight های unexpected — قطعه‌های مفقود مسئله.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-row">
+        <span class="q-num">Q18</span>
+        <div class="q-text">ایمیلت <span style="color:var(--text-dim);font-size:12px;font-weight:400">(اختیاری)</span></div>
+        <div class="why-action">
+          <div class="cell cell-why">
+            <div class="cell-label">Why we ask</div>
+            <div class="cell-body">ساخت لیست کاربرای علاقه‌مند به مصاحبه عمیق‌تر.</div>
+          </div>
+          <div class="cell cell-action">
+            <div class="cell-label">What we do</div>
+            <div class="cell-body">recruit کردن user interview ها برای فاز بعد + لیست early access نسخه پولی.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="review-cta">
+    <h3>آماده‌ای فرم رو ببینی؟</h3>
+    <p>یه دور کامل پر کن — حتی اگه CV Roast رو تست نکردی هم سوالای بخش ۳ رو رد کن. فیدبکت رو هرجا (DM, Telegram, voice note) بفرست.</p>
+    <a class="cta-btn" href="https://cvroast.dev/feedback" target="_blank" rel="noopener">رفتن به فرم فیدبک <span class="arrow">→</span></a>
+  </div>
+
+  <div class="footer">
+    ساخته شده توسط <a href="https://t.me/twitterimmigrant">Tech Immigrants</a> · <a href="https://cvroast.dev">cvroast.dev</a>
+  </div>
+
+</div>
+
+<script>
+  const copyBtn = document.getElementById('copyMsg');
+  const msgBody = document.getElementById('msgBody');
+
+  copyBtn.addEventListener('click', async () => {
+    const text = msgBody.innerText.trim();
+    try {
+      await navigator.clipboard.writeText(text);
+      const original = copyBtn.textContent;
+      copyBtn.textContent = 'Copied ✓';
+      copyBtn.classList.add('copied');
+      setTimeout(() => {
+        copyBtn.textContent = original;
+        copyBtn.classList.remove('copied');
+      }, 1800);
+    } catch (e) {
+      copyBtn.textContent = 'Press Ctrl+C';
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -362,6 +362,33 @@
 
   .required-star { color: var(--bad); margin-right: 2px; }
 
+  .is-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+    user-select: none;
+    filter: grayscale(0.6);
+    transition: opacity 0.2s ease, filter 0.2s ease;
+  }
+
+  .tested-disabled-note {
+    display: none;
+    font-size: 13px;
+    color: var(--ember);
+    background: var(--ember-glow);
+    border: 1px solid rgba(255, 159, 28, 0.25);
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin: 18px 0 4px;
+    line-height: 1.7;
+  }
+
+  #tested-dependent.is-disabled .tested-disabled-note {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+    filter: none;
+  }
+
   .divider {
     height: 1px;
     background: var(--border-soft);
@@ -527,7 +554,7 @@
     <div class="section-card">
       <div class="section-label">PART 3 OF 4</div>
       <div class="section-title">تجربه‌ات از CV Roast (اختیاری)</div>
-      <div class="section-desc">CV Roast یکی از ابزارهایی بود که ساختیم تا رزومه‌ها رو بررسی کنه. اگه تستش کردی، جواب‌هات کمکمون میکنه بفهمیم چی کار کرده و چی نه. اگه هنوز تست نکردی، <a href="https://cvroast.dev" target="_blank">اینجا امتحانش کن</a> یا برو بخش بعدی.</div>
+      <div class="section-desc">CV Roast یکی از ابزارهایی بود که ساختیم تا رزومه‌ها رو بررسی کنه. اگه تستش کردی، جواب‌هات کمکمون میکنه بفهمیم چی کار کرده و چی نه. حتی اگه CV Roast رو تست نکردی، نگران نباش — کافیه گزینه «نه، هنوز تست نکردم» رو بزنی و باقی سوالا غیرفعال میشن، یا <a href="https://cvroast.dev" target="_blank">اینجا یه دور امتحانش کن</a>.</div>
 
       <div class="question">
         <label class="q-label">CV Roast رو تست کردی؟</label>
@@ -536,6 +563,12 @@
           <label class="radio-option"><input type="radio" name="tested" value="browsed"> فقط سایت رو دیدم، Roast نکردم</label>
           <label class="radio-option"><input type="radio" name="tested" value="no"> نه، هنوز تست نکردم</label>
         </div>
+      </div>
+
+      <div id="tested-dependent">
+
+      <div class="tested-disabled-note">
+        چون CV Roast رو تست نکردی، این سوالا غیرفعال شدن. برو بخش ۴ تا بگی چی بسازیم.
       </div>
 
       <div class="divider"></div>
@@ -596,6 +629,8 @@
       <div class="question">
         <label class="q-label">بدترین چیز یا بزرگ‌ترین مشکلش چی بود؟</label>
         <textarea name="worst_thing" rows="2" placeholder="یه چیز که اذیتت کرد یا نداشت..."></textarea>
+      </div>
+
       </div>
     </div>
 
@@ -766,6 +801,31 @@
         group.querySelectorAll('input:not(:checked)').forEach(cb => cb.disabled = true);
       } else {
         group.querySelectorAll('input').forEach(cb => cb.disabled = false);
+      }
+    });
+  });
+
+  // When "no" is selected on the "tested CV Roast?" question, disable the rest of Part 3
+  // and clear any answers that were already filled (so they don't get submitted by accident).
+  const testedDependent = document.getElementById('tested-dependent');
+  document.querySelectorAll('input[name="tested"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (!testedDependent) return;
+      if (radio.value === 'no' && radio.checked) {
+        testedDependent.classList.add('is-disabled');
+        testedDependent.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => {
+          el.checked = false;
+          el.disabled = true;
+        });
+        testedDependent.querySelectorAll('textarea').forEach(el => {
+          el.value = '';
+          el.disabled = true;
+        });
+      } else {
+        testedDependent.classList.remove('is-disabled');
+        testedDependent.querySelectorAll('input, textarea').forEach(el => {
+          el.disabled = false;
+        });
       }
     });
   });

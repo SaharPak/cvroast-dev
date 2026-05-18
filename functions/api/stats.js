@@ -16,6 +16,8 @@ export async function handleStats(request, env) {
   try {
     let totalRoasts = 0;
     let totalTokens = 0;
+    let feedbackViews = 0;
+    let feedbackSubmissions = 0;
     if (env.RATE_LIMIT) {
       const raw = await env.RATE_LIMIT.get('stats:total_roasts');
       if (raw !== null) {
@@ -25,9 +27,22 @@ export async function handleStats(request, env) {
       if (rawTokens !== null) {
         totalTokens = parseInt(rawTokens, 10) || 0;
       }
+      const rawViews = await env.RATE_LIMIT.get('views:feedback');
+      if (rawViews !== null) {
+        feedbackViews = parseInt(rawViews, 10) || 0;
+      }
+      const rawFeedback = await env.RATE_LIMIT.get('stats:total_feedback');
+      if (rawFeedback !== null) {
+        feedbackSubmissions = parseInt(rawFeedback, 10) || 0;
+      }
     }
     return new Response(
-      JSON.stringify({ total_roasts: totalRoasts, total_tokens: totalTokens }),
+      JSON.stringify({
+        total_roasts: totalRoasts,
+        total_tokens: totalTokens,
+        feedback_page_views: feedbackViews,
+        feedback_submissions: feedbackSubmissions,
+      }),
       { status: 200, headers: CORS_HEADERS }
     );
   } catch (err) {
